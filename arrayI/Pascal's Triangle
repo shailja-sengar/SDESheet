@@ -1,0 +1,29 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+//tc:O(numrows^2)
+vector<vector<int>>generatePascal(int numRow){
+    vector<vector<int>>ans(numRow);
+        for(int i=0; i<numRow; i++){
+            ans[i].resize(i+1);
+            ans[i][0]=ans[i][i] = 1;
+            for(int j=1; j<i; j++){
+                ans[i][j] = ans[i-1][j-1] + ans[i-1][j];
+            }
+        }
+
+        return ans;
+}
+int main(){
+    int numRow;
+    cout<<"Enter the number of rows: ";
+    cin>>numRow;
+    vector<vector<int>>ans(numRow);
+    ans = generatePascal(numRow);
+    for(int i=0;i<numRow;i++){
+        for(int j=0;j<=i; j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+}
