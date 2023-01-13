@@ -1,0 +1,89 @@
+#include <iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+//brute force: using 3 loops, tc:O(n^3), sc:O(1)
+int maxSubArray(vector<int>&nums, vector<int>&subArray){
+    int maxSum = INT_MIN;
+    int n = nums.size();
+    
+    //edge case
+    if(n==1){
+        return nums[0];
+    }
+    for(int i=0; i<n; i++){
+        for(int j=i+1; j<n; j++){
+            int currSum = 0;
+            for(int k=i; k<=j; k++){
+                currSum = currSum + nums[k];
+            }
+            if(currSum > maxSum){
+                subArray.clear();
+                maxSum = currSum;
+                subArray.push_back(i);
+                subArray.push_back(j);
+            }
+        }
+    }
+    return maxSum;
+}
+
+//better approach: making variable for storing the sum, avoid the 3rd loop, tc:O(n^2), sc:O(1)
+int maxSubArray(vector<int>&nums, vector<int>&subArray){
+    int maxSum = INT_MIN;
+    int n = nums.size();
+    
+    for(int i=0; i<n; i++){
+        int currSum = 0;
+        for(int j=i; j<n; j++){
+            currSum = currSum + nums[j];
+            if(currSum > maxSum){
+                subArray.clear();
+                maxSum = currSum;
+                subArray.push_back(i);
+                subArray.push_back(j);
+            }
+        }
+    }
+    return maxSum;
+}
+
+//best approach: using kadane's algorithm, tc:O(n), sc:O(1)
+int maxSubArray(vector<int>&nums, vector<int>&subArray){
+    int maxSum = INT_MIN;
+    int n = nums.size();
+    int meh = 0;
+    int start = 0;
+    
+    for(int i=0; i<n; i++){
+        meh = meh + nums[i];
+        if(meh > maxSum){
+            subArray.clear();
+            maxSum = meh;
+            subArray.push_back(start);
+            subArray.push_back(i);
+        }
+        if(meh < 0){
+            meh = 0;
+            start = i+1;
+        }
+    }
+    return maxSum;
+}
+
+int main()
+{
+    vector<int>nums = {-2,1,-3,4,-1,2,1,-5,4};
+    int n = nums.size();
+    vector<int>subArray(n);
+    
+    int sum = maxSubArray(nums, subArray);
+    cout<<"Maximum sum is: "<<sum<<endl;
+    
+    cout<<"Maximum sum subarray is: "<<endl;
+    for(int i=subArray[0]; i<=subArray[1]; i++){
+        cout<<nums[i]<<" ";
+    }
+    return 0;
+}
