@@ -1,0 +1,52 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+//brute force: generate all the permutation tc: O(n! * n), sc:o(1)
+
+//optimal: using linear time tc:O(3*n) / O(n), sc:O(1)
+void swap(vector<int>&nums, int start, int end){
+    int temp = nums[start];
+    nums[start] = nums[end];
+    nums[end] = temp;
+    
+}
+
+void reverse(vector<int>&nums, int i, int j){
+    while(i < j){
+        swap(nums, i++, j--);
+    }
+}
+
+void nextPermutation(vector<int>&nums){
+    int n = nums.size(), k, l;
+    for(k=n-2; k>=0; k--){
+        if(nums[k] < nums[k+1]){
+            break;
+        }
+    }
+    if(k<0){
+        reverse(nums, 0, n-1);
+    }
+    else{
+        for(l=n-1; l>k; l--){
+            if(nums[l] > nums[k]){
+                break;
+            }
+        }
+        swap(nums, k, l);
+        reverse(nums, k+1, n-1);
+    }
+}
+
+int main()
+{
+    vector<int>nums = {1,2,3};
+    int n = nums.size();
+    
+    nextPermutation(nums);
+    cout<<"Next permutation of the given array is: "<<endl;
+    for(int i=0; i<n; i++){
+        cout<<nums[i]<<" ";
+    }
+    return 0;
+}
