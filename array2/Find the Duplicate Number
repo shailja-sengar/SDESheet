@@ -1,0 +1,50 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//brute force: tc:O((nlogn) + (n)), sc:O(1)
+/*int duplicate(vector<int>&arr){
+    int n = arr.size();
+    sort(arr.begin(), arr.end());
+    for(int i=0; i<n; i++){
+        if(arr[i] == arr[i+1])
+            return arr[i];
+    }
+    return 0;
+}*/
+
+//optimal: tc:O(n), sc:O(n)
+/*int duplicate(vector<int>&arr){
+    int n= arr.size();
+    vector<int>freq(n+1, 0);
+    for(int i=0; i<n; i++){
+        if(freq[arr[i]] == 0){
+            freq[arr[i]]+=1;
+        }
+        else{
+            return arr[i];
+        }
+    }
+    return 0;
+}*/
+
+//best: tc:O(n), sc:O(1), using linked list cycle method
+int duplicate(vector<int>&nums){
+    int slow=nums[0], fast=nums[0];
+    
+    do{
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+    }while(slow != fast);
+    fast = nums[0];
+    while(slow != fast){
+        slow = nums[slow];
+        fast = nums[fast];
+    }
+    return slow;
+}
+int main(){
+    vector<int>arr = {1,3,4,2,2};
+    cout<<duplicate(arr);
+}
