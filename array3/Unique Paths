@@ -1,0 +1,60 @@
+#include <iostream>
+#include<vector>
+
+using namespace std;
+
+//brute force: using recursion, tc:recursive solution will give exponential, sc:stack space exponenetial
+/*int funRec(int i, int j){
+    //base case
+    //destination
+    if(i==0 && j==0)
+        return 1;
+    //out of bound 
+    if(i<0 || j<0)
+        return 0;
+    
+    int up = funRec(i-1, j);
+    int left = funRec(i, j-1);
+    
+    return up+left;
+}*/
+
+//optimal: using dp, tc:O(n*m), sc:O(n*m)
+/*int countPaths(int i, int j, int m, int n, vector<vector<int>>&dp){
+    if(i==(m-1)&&j==(n-1)) return 1;
+    if(i>=m||j>=n) return 0;
+    
+    if(dp[i][j] != -1) return dp[i][j];
+    
+    else return dp[i][j] = countPaths(i+1, j, m, n, dp) + countPaths(i, j+1, m, n, dp);
+}
+int uniquePaths(int m, int n){
+    vector<vector<int>>dp(m+1, vector<int>(n+1, -1));
+    int num = countPaths(0, 0, m, n, dp);
+    if(m==1&&n==1)
+        return num;
+    return dp[0][0];
+}*/
+
+//most optimal: using combinatorics, tc:O(n-1)/O(m-1), sc:O(1)
+int uniquePaths(int m, int n){
+    int N = n + m -2;
+    int r = m-1;
+    double res = 1;
+    
+    for(int i=1; i<=r; i++){
+        res = res * (N - r + i)/i;
+    }
+    return (int)res;
+}
+int main()
+{
+    int m, n;
+    m=3;
+    n=7;
+    //int ans = 0;
+    //ans = funRec(m-1, n-1);
+    int ans = uniquePaths(m, n);
+    cout<<ans;
+    return 0;
+}
