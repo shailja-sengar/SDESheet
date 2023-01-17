@@ -1,0 +1,70 @@
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+#include<unordered_set>
+#include<unordered_map>
+#include<string>
+#include<climits>
+using namespace std;
+
+//brute force: tc:O(n^2), sc:O(1)
+/*int longestSubstring(string str){
+    int ans =INT_MIN;
+    int n = str.size();
+    for(int i=0; i<n; i++){
+        unordered_set<char>st;
+        for(int j=i; j<n; j++){
+            //if current char is present in set it means it is repeated
+            if(st.find(str[j]) != st.end()){
+                ans = max(ans, j-i);
+                break;
+            }
+            st.insert(str[j]);
+        }
+    }
+    return ans;
+}*/
+
+//optimal: using map sliding window, tc:O(n), sc:O(n)
+int longestSubstring(string str){
+    int ans = INT_MIN;
+    int n = str.size();
+    unordered_map<char,int>ump;
+    int i=0, j=0;
+    while(j < n){
+        ump[str[j]]++;
+        
+        //step1 : when the map size is greater than the window size, but this never happen
+        if(ump.size() > (j-i+1)){
+            j++;
+        }
+        
+        //step2: when the map size is equal to the window size we got our candidate of answer
+        else if(ump.size() == (j-i+1)){
+            int currWinSize = j-i+1;
+            ans = max(ans, currWinSize);
+            j++;
+        }
+        //step3: when we need to maintain the window 
+        else{
+            //if map size is less than the window size, it means window is heaving some duplicates, so remove them from intial
+            while(ump.size() < (j-i+1)){
+                ump[str[i]]--;
+                if(ump[str[i]] == 0){
+                    ump.erase(str[i]);
+                }
+                i++;
+            }
+            j++;
+        }
+    }
+    return ans;
+}
+int main()
+{
+    string str = "abcabcbb";
+    int ans = longestSubstring(str);
+    cout<<ans;
+    return 0;
+}
