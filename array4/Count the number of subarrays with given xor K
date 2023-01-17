@@ -1,0 +1,57 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+#include<unordered_map>
+using namespace std;
+
+//brute force: tc:O(n^2), sc:O(1)
+/*int totalSubarray(vector<int>&nums, int k){
+    int n = nums.size();
+    int len = 0;
+    for(int i=0; i<n; i++){
+        int xorEle = 0;
+        for(int j=i; j<n; j++){
+            xorEle ^= nums[j];
+            if(xorEle == k){
+                len++;
+            }
+        }
+    }
+    return len;
+}*/
+
+//optimal: using map, tc:o(nlogn), sc:O(n)
+int totalSubarray(vector<int>&nums, int k){
+    unordered_map<int, int>visited;
+    int n = nums.size();
+    int xr=0, count=0;
+    for(int i=0; i<n; i++){
+        xr = xr^nums[i];
+        if(xr == k){
+            count++;
+        }
+        int y = xr^k;
+        if(visited.find(y) != visited.end()){
+            count = count + visited[y];
+        }
+        visited[xr]++;
+    }
+    return count;
+}
+int main()
+{
+    vector<int>nums{4, 2, 2, 6, 4};
+    int k = 6;
+    int ans = totalSubarray(nums, k);
+    cout<<ans;
+
+    return 0;
+}
