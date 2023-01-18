@@ -1,0 +1,94 @@
+#include <iostream>
+#include<algorithm>
+using namespace std;
+class node{
+  public:
+    int data;
+    node* next;
+    
+    node(int val){
+        data = val;
+        next = NULL;
+    }
+};
+
+//insert at last, taking head by reference bcoz list is going to be modified
+void insertAtTail(node* &head, int val){
+    //make new node which stores the coming val
+    node* currNode = new node(val);
+    //when head is null, at initial stage
+    if(head == NULL){
+        head = currNode;
+        return;
+    }
+        
+    
+    //make the temp node to travarse the list to reach at the end
+    node* temp = head;
+    
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+    currNode->next = NULL;
+}
+
+//display list
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+//tc:O(max(m, n)) 
+node* addNumbers(node* l1, node* l2){
+    node* dummyHead = new node(0);
+    node* temp = dummyHead;
+    int carry = 0;
+    while(l1 != NULL || l2 != NULL || carry != 0){
+        int sum = 0;
+        if(l1 != NULL){
+            sum += l1->data;
+            l1 = l1->next;
+        }
+        
+        if(l2 != NULL){
+            sum += l2->data;
+            l2 = l2->next;
+        }
+        
+        sum += carry;
+        carry = sum/10;
+        node* currNode = new node(sum%10);
+        temp->next = currNode;
+        temp = temp->next;
+    }
+    return dummyHead->next;
+}
+int main()
+{
+    node* l1 = NULL;
+    node* l2 = NULL;
+    
+    //push value in 1st list
+    insertAtTail(l1, 2);
+    insertAtTail(l1, 4);
+    insertAtTail(l1, 3);
+    
+    insertAtTail(l2, 5);
+    insertAtTail(l2, 6);
+    insertAtTail(l2, 4);
+    
+    //print both the lists
+    //printList(l1);
+    //printList(l2);
+    
+    //remove nth node
+    node* ans = addNumbers(l1, l2);
+    printList(ans);
+    
+
+    return 0;
+}
