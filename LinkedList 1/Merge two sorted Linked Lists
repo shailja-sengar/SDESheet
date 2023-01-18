@@ -1,0 +1,121 @@
+#include <iostream>
+#include<algorithm>
+using namespace std;
+class node{
+  public:
+    int data;
+    node* next;
+    
+    node(int val){
+        data = val;
+        next = NULL;
+    }
+};
+
+//insert at last, taking head by reference bcoz list is going to be modified
+void insertAtTail(node* &head, int val){
+    //make new node which stores the coming val
+    node* currNode = new node(val);
+    //when head is null, at initial stage
+    if(head == NULL){
+        head = currNode;
+        return;
+    }
+        
+    
+    //make the temp node to travarse the list to reach at the end
+    node* temp = head;
+    
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+    currNode->next = NULL;
+}
+
+//display list
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+//Merge two sorted lists
+//Sol1: using extra dummy list, tc:O(n+m), sc:O(n+m) 
+/*node* mergeList(node* l1, node* l2){
+    node* dummyHead = new node(0);
+    node* tail = dummyHead;
+    
+    while(l1 && l2 ){
+            int val1 = l1->data;
+            int val2 = l2-> data;
+            
+            if(l1->data < l2->data){
+                tail->data = val1;
+                l1 = l1-> next;
+            }
+            else{
+                tail->data = val2;
+                l2 = l2->next;
+            }
+            
+            if(l1 && l2){
+                tail->next = new node(0);
+                tail = tail->next;
+            }
+        }
+        
+        if(!l1) tail->next = l2;
+        if(!l2) tail->next = l1;
+        
+        return dummyHead;
+}*/
+
+//Sol2: using inplace method, tc:O(n+m), sc:O(1) 
+node* mergeList(node* l1, node* l2){
+    
+    if(l1->data > l2->data) 
+        swap(l1, l2);
+    
+    node* res = l1;
+    while(l1 != NULL && l2!=NULL){
+        node* temp = NULL;
+        
+        while(l1 != NULL && l1->data <= l2->data){
+            temp = l1;
+            l1 = l1->next;
+        }
+        temp->next = l2;
+        swap(l1, l2);
+    }
+    return res;
+}
+
+int main()
+{
+    node* l1 = NULL;
+    node* l2 = NULL;
+    
+    //push value in 1st list
+    insertAtTail(l1, 1);
+    insertAtTail(l1, 2);
+    insertAtTail(l1, 4);
+    
+    //insert the value in 2nd list
+    insertAtTail(l2, 1);
+    insertAtTail(l2, 3);
+    insertAtTail(l2, 4);
+    
+    //print both the lists
+    //printList(l1);
+    //printList(l2);
+    
+    //merge two sorted lists
+    node* ansNode;
+    ansNode = mergeList(l1, l2);
+    printList(ansNode);
+
+    return 0;
+}
