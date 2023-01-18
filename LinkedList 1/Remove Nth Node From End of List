@@ -1,0 +1,120 @@
+#include <iostream>
+#include<algorithm>
+using namespace std;
+class node{
+  public:
+    int data;
+    node* next;
+    
+    node(int val){
+        data = val;
+        next = NULL;
+    }
+};
+
+//insert at last, taking head by reference bcoz list is going to be modified
+void insertAtTail(node* &head, int val){
+    //make new node which stores the coming val
+    node* currNode = new node(val);
+    //when head is null, at initial stage
+    if(head == NULL){
+        head = currNode;
+        return;
+    }
+        
+    
+    //make the temp node to travarse the list to reach at the end
+    node* temp = head;
+    
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+    currNode->next = NULL;
+}
+
+//display list
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+//brute force: 
+/*node* removeNthNode(node* head, int n){
+    int length=0;
+        node* temp = head;
+        while(temp!=NULL){
+            temp = temp->next;
+            length++;
+        }
+       // cout<<length;
+        if(length==n)
+      {
+          node* nnode=head;
+          head=head->next;
+          delete nnode;
+          return head;
+      }
+        int count=1;
+        node* curr;
+        curr = head;
+        
+        node* prev = NULL;
+        while(count <= (length-n)){
+            prev = curr;
+            curr = curr->next;
+            count++;
+        }
+        //cout<<count;
+        //cout<<prev->val;
+        prev->next = curr->next;
+        curr = curr->next;
+        
+        return head;
+}*/
+
+//optimal: using 2pointer, tc:O(n), sc:O(1)
+node* removeNthNode(node* head, int n){
+    node* start = new node(0);
+    start->next = head;
+    node* slow = start;
+    node* fast = start;
+    
+    //move fast pointer till nth node from starting
+    for(int i=1; i<=n; i++)
+        fast = fast->next;
+        
+    //move move both pointer untill fast reaches to null, then slow will be at nth node from the back
+    while(fast->next != NULL){
+        fast = fast->next;
+        slow = slow->next;
+    }
+    slow->next = slow->next->next;
+    return start->next;
+}
+int main()
+{
+    node* l1 = NULL;
+    node* l2 = NULL;
+    
+    //push value in 1st list
+    insertAtTail(l1, 1);
+    insertAtTail(l1, 2);
+    insertAtTail(l1, 3);
+    insertAtTail(l1, 4);
+    insertAtTail(l1, 5);
+    
+    //print both the lists
+    //printList(l1);
+    //printList(l2);
+    
+    //remove nth node
+    node* ans = removeNthNode(l1, 2);
+    printList(ans);
+    
+
+    return 0;
+}
