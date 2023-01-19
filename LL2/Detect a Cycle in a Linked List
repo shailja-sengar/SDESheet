@@ -53,7 +53,7 @@ void createCycle(node* &head, int a, int b){
 //     cout<<endl;
 // }
 
-//using hashing: tc:(n*m), sc:O(n)
+//using hashing: tc:(n), sc:O(n)
 // bool isCycle(node* head){
 //     unordered_set<node*>st;
     
@@ -67,10 +67,7 @@ void createCycle(node* &head, int a, int b){
 //     return false;
 // }
 
-//efficient: cycle detection, tc:O(2*max(len of list1, len of list2)) 
-                                    // + O(abs(len of list1, lenof list 2)) 
-                                    // + O(min(len of list1, len of list2))
-                            //sc : o(1)
+//efficient: cycle detection, tc:O(n), sc : o(1)
 bool isCycle(node* head){
     if(head == NULL) return false;
     node* slow = head;
