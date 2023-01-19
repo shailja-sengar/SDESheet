@@ -1,0 +1,97 @@
+#include <iostream>
+
+using namespace std;
+class node{
+public:
+  int data;
+  node* next;
+  node(int val){
+      data = val;
+      next = NULL;
+  }
+};
+void insertNode(node* &head, int val){
+    node* currNode = new node(val);
+    if(head == NULL){
+        head = currNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+}
+
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+//sol: tc:O(n/k)*k = o(n), sc:O(1)
+int lengthOfList(node* head){
+    node* curr = head;
+    int cnt=0;
+    while(curr != NULL){
+        cnt++;
+        curr = curr->next;
+        
+    }
+    return cnt;
+}
+node* reverseKGroup(node* head, int k){
+    if(head==NULL || head->next==NULL) return head;
+    
+    int length = lengthOfList(head);
+    
+    //make dummy node
+    node* dummyHead = new node(0);
+     dummyHead->next = head;
+    
+    node* pre = dummyHead;
+    node* curr;
+    node* nex;
+    
+    while(length >= k){
+        curr = pre->next;
+        nex = curr->next;
+        
+        //for 1 set of group
+        for(int i=1; i<k; i++){
+            curr->next = nex->next;
+            nex->next = pre->next;
+            pre->next = nex;
+            nex = curr->next;
+        }
+        pre = curr;
+        length -=k;
+    }    
+    return dummyHead->next;
+    
+}
+int main()
+{
+    node* head = NULL;
+    insertNode(head, 1);
+    insertNode(head, 2);
+    insertNode(head, 3);
+    insertNode(head, 4);
+    insertNode(head, 5);
+    insertNode(head, 6);
+    insertNode(head, 7);
+    insertNode(head, 8);
+    
+    int k = 3;
+    cout<<"before reversing the list"<<endl;
+    printList(head);
+    
+    cout<<"after reversing the list"<<endl;
+    node* newHead = reverseKGroup(head, k);
+    printList(newHead);
+    //printList(head);
+
+    return 0;
+}
