@@ -1,0 +1,109 @@
+
+
+#include <iostream>
+#include<vector>
+#include<unordered_set>
+using namespace std;
+class node{
+public:
+  int data;
+  node* next;
+  node(int val){
+      data = val;
+      next = NULL;
+  }
+};
+void insertNode(node* &head, int val){
+    node* currNode = new node(val);
+    if(head == NULL){
+        head = currNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+}
+
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+void createCycle(node* &head, int n){
+    node* ptr = head;
+    node* temp = head;
+    int cnt = 0;
+    while(temp->next!= NULL){
+        if(cnt != n){
+            cnt++;
+            ptr = ptr->next;
+        }
+        temp = temp->next;
+    }
+    temp->next = ptr;
+}
+
+//brute force: tc:O(n), sc:O(n)
+// node* detectCycle(node* head){
+//     unordered_set<node*>st;
+//     node* temp = head;
+//     while(temp != NULL){
+//         if(st.find(temp) != st.end())
+//             return temp;
+//         st.insert(temp);
+//         temp = temp->next;
+//     }
+//     return NULL;
+// }
+
+//optimal: tc:O(n), sc:O(1)
+node* detectCycle(node* head){
+    node* slow = head;
+    node* fast = head;
+    node* entry = head;
+    
+    while(fast->next!=NULL && fast->next->next != NULL){
+        slow = slow->next;
+        fast = fast->next->next;
+        
+        if(slow == fast){
+            while(slow != entry){
+                slow= slow->next;
+                entry = entry->next;
+            }
+            return slow;
+        }
+    }
+    return NULL;
+}
+int main()
+{
+    node* head = NULL;
+    insertNode(head, 1);
+    insertNode(head, 2);
+    insertNode(head, 3);
+    insertNode(head, 4);
+    insertNode(head, 3);
+    insertNode(head, 6);
+   insertNode(head, 10);
+    
+    createCycle(head, 2);
+    
+    node* ansNode = detectCycle(head);
+    if(ansNode == NULL) cout<<"No Cycle";
+    else{
+        node* temp = head;
+        int pos = 0;
+        while(temp != ansNode){
+            pos++;
+            temp = temp->next;
+        }
+        cout<<pos;
+    }
+    return 0;
+}
