@@ -1,0 +1,104 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+class node{
+public:
+  int data;
+  node* next;
+  node(int val){
+      data = val;
+      next = NULL;
+  }
+};
+void insertNode(node* &head, int val){
+    node* currNode = new node(val);
+    if(head == NULL){
+        head = currNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+}
+
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+//brute force: tc:O(n), sc:O(n)
+// bool isPalindrome(node* head){
+//     node* temp = head;
+//     vector<int>nums;
+    
+//     while(temp != NULL){
+//         nums.push_back(temp->data);
+//         temp = temp->next;
+//     }
+    
+//     for(int i=0; i<nums.size()/2; i++){
+//         if(nums[i] != nums[nums.size()-i-1])
+//             return false;
+//     }
+//     return true;
+// }
+
+//optimal: 
+node* reverse(node* head){
+    node* p=head;
+    node* q = NULL;
+    node* r = NULL;
+    
+    while(p!=NULL){
+        r = q;
+        q = p;
+        p = p->next;
+        q->next = r;
+    }
+    return q;
+}
+bool isPalindrome(node* head){
+    if(head==NULL || head->next == NULL) return true;
+    //find the middle node
+    node* slow=head;
+    node* fast = head;
+    while(fast->next !=NULL && fast->next->next != NULL){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    
+    //reverse the list after the middle node
+    slow->next = reverse(slow->next);
+    slow = slow->next;
+    node* temp1 = head;
+    
+    while(slow != NULL){
+        if(temp1->data != slow->data) return false;
+        temp1= temp1->next;
+        slow = slow->next;
+    }
+    return true;
+}
+int main()
+{
+    node* head = NULL;
+    insertNode(head, 1);
+    insertNode(head, 2);
+    insertNode(head, 3);
+    insertNode(head, 3);
+    insertNode(head, 2);
+    insertNode(head, 1);
+    
+    if(isPalindrome(head) == true){
+        cout<<"Palindrome";
+    }
+    else{
+        cout<<"Not Palindrome";
+    }
+    return 0;
+}
