@@ -1,0 +1,86 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+//brute force: tc:O(n*n), sc:O(1)
+/*int trappingWater(vector<int>nums){
+    int ans = 0;
+    int n = nums.size();
+    
+    for(int i=0; i<n; i++){
+        int leftMax=0, rightMax=0;
+        int j=i;
+        while(j >=0){
+            leftMax = max(leftMax, nums[j]);
+            j--;
+        }
+        j=i;
+        while(j<n){
+            rightMax = max(rightMax, nums[j]);
+            j++;
+        }
+        ans += min(leftMax, rightMax) - nums[i];
+    }
+    return ans;
+}*/
+
+//efficient: tc:O(3*n), sc:O(n)+(n)
+/*int trappingWater(vector<int>&nums){
+    int ans = 0;
+    int n = nums.size();
+    vector<int>prefix(n);
+    vector<int>suffix(n);
+    
+    prefix[0] = nums[0];
+    for(int i=1; i<n; i++){
+        prefix[i] = max(prefix[i-1], nums[i]);
+    }
+    
+    suffix[n-1] = nums[n-1];
+    for(int i=n-2; i>=0; i--){
+        suffix[i] = max(suffix[i+1], nums[i]);
+    }
+    
+    for(int i=0; i<n; i++){
+        ans += min(prefix[i], suffix[i]) - nums[i];
+    }
+    return ans;
+}*/
+
+//optimal: using 2 pointer, tc:o(n), sc:O(1)
+int trappingWater(vector<int>&nums){
+    int ans = 0;
+    int n= nums.size();
+    int leftMax=0, rightMax=0;
+    int left=0, right=n-1;
+    
+    while(left < right){
+        if(nums[left] < nums[right]){
+            if(leftMax <= nums[left]){
+                leftMax = nums[left];
+            }
+            else{
+                ans += leftMax - nums[left];
+            }
+            left++;
+        }
+        else{
+            if(rightMax <= nums[right]){
+                rightMax = nums[right];
+            }
+            else{
+                ans += rightMax - nums[right];
+            }
+            right--;
+        }
+    }
+    return ans;
+}
+int main()
+{
+    vector<int>nums = {0,1,0,2,1,0,1,3,2,1,2,1};
+    
+    cout<<trappingWater(nums);
+
+    return 0;
+}
