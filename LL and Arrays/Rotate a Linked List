@@ -1,0 +1,111 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+class node{
+public:
+  int data;
+  node* next;
+  node(int val){
+      data=val;
+      next=NULL;
+  }
+};
+
+//insert the new value at the end of list
+void insertNode(node* &head, int val){
+    node* currNode = new node(val);
+    
+    if(head == NULL)
+    {
+        head = currNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = currNode;
+}
+
+//display the linked list
+void printList(node* head){
+    while(head != NULL){
+        cout<<head->data<<"->";
+        head = head->next;
+    }
+    cout<<"NULL";
+}
+
+//rotate the list by k times
+//brute force: tc:O(number of nodes*k), sc:O(1)
+/*node* rotateList(node* head, int k){
+    //edge case
+    if(head==NULL || head->next==NULL){
+        return head;
+    }
+    
+    for(int i=0; i<k; i++){
+        node* temp = head;
+        while(temp->next->next != NULL){
+            temp = temp->next;
+        }
+        node* end = temp->next;
+        temp->next = NULL;
+        end->next = head;
+        
+        head = end;
+    }
+    return head;
+}*/
+
+//optimal: using k%length, tc:O(len of list) + O(len of list - (len%k)), sc:O(1)
+node* rotateList(node* head, int k){
+    //step 1: calculate the lenght of the list
+    int len = 1;
+    node* temp = head;
+    while(temp->next != NULL){
+      len++;
+      temp = temp->next;  
+    } 
+    
+    //connect last node to head node
+    temp->next = head;
+    k = k%len;     // if the k is greater than the length
+    int end = len - k;
+    
+    while(end--) temp = temp->next;
+    
+    //break the link, make the new head
+    head = temp->next;    
+    temp->next = NULL;
+    
+    return head;
+    
+}
+int main()
+{
+    node* head = NULL;
+    insertNode(head, 1);
+    insertNode(head, 2);
+    insertNode(head, 3);
+    insertNode(head, 4);
+    insertNode(head, 5);
+    
+    cout<<"Initial list: ";
+    printList(head);
+    cout<<endl;
+    int k = 2;
+    node* ansNode = rotateList(head, k);
+    cout<<"After rotating the list: ";
+    printList(ansNode);
+
+    return 0;
+}
