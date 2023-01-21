@@ -1,0 +1,54 @@
+#include <iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+struct Job{
+    int jobId;
+    int deadline;
+    int profit;
+};
+
+//Sol: tc:O(nlogn) + O(n*m),sc:O(m)
+bool comp(Job j1, Job j2){
+    return j1.profit > j2.profit;
+}
+vector<int>jobSeq(Job nums[], int n){
+    //sort according to the profit
+    sort(nums, nums+n, comp);
+    
+    //get the maximum deadline
+    int maxDeadline = 0;
+    for(int i=0; i<n; i++){
+        maxDeadline = max(maxDeadline, nums[i].deadline);
+    }
+    
+    //make an array size of maxDeadline
+    vector<int>seq(maxDeadline, -1);
+    
+    int totalJobs = 0;
+    int totalProfit = 0;
+    
+    for(int i=0; i<n; i++){
+        for(int j=nums[i].deadline; j>0; j--){
+            if(seq[j] == -1){
+                seq[j] = nums[i].jobId;
+                totalJobs++;
+                totalProfit += nums[i].profit;
+                break;
+            }   
+        }
+    }
+    return {totalJobs, totalProfit};
+}
+int main()
+{
+    int n = 4;
+    Job nums[n] = {{1,4,20},{2,1,10},{3,2,40},{4,2,30}};
+    
+    vector<int>ans = jobSeq(nums, n);
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+    return 0;
+}
