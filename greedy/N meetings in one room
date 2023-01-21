@@ -3,6 +3,7 @@
 #include<algorithm>
 using namespace std;
 
+//tc: O(n) +O(n log n) + O(n) ~O(n log n), sc:O(n)
 struct meeting{
     int start;
     int end;
