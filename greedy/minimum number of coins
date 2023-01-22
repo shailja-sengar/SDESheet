@@ -1,0 +1,25 @@
+#include <iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//tc: O(V), sc:O(1)
+int main()
+{
+    int V = 70;
+    vector<int>coins = {1, 2, 5, 10, 20, 50, 100, 500, 1000};
+    vector<int>ans;
+    int n = coins.size();
+    for(int i=n-1; i>=0; i--){
+        if(V >= coins[i]){
+            V -= coins[i];
+        ans.push_back(coins[i]);
+        }
+    }
+    cout<<"Total number of notes: "<<ans.size()<<endl;
+    cout<<"Notes are: "<<endl;
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+    return 0;
+}
