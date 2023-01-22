@@ -1,0 +1,49 @@
+#include <iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct Item{
+    int value;
+    int weight;
+};
+
+bool comp(Item a, Item b){
+    double res1 = (double)a.value / (double)a.weight;
+    double res2 = (double)b.value / (double) b.weight;
+    return res1 > res2;
+}
+double fractionalKnapsack(Item arr[], int n, int w){
+    //sort the item vector based on value/weight in decreasing order
+    sort(arr, arr+n, comp);
+    
+    double profit = 0.0;
+    int tot_weight = w;
+    for(int i=0; i<n; i++){
+        
+        if(tot_weight > 0){
+             if(arr[i].weight <= tot_weight){
+            profit += arr[i].value;
+            tot_weight -= arr[i].weight;
+        }
+        else{
+            
+            profit += (arr[i].value / (double) arr[i].weight) * tot_weight;
+            tot_weight -= arr[i].weight;
+            
+        }
+        }
+    }
+    return profit;
+}
+int main()
+{
+    int n = 2;
+    int w = 50;
+    
+    Item arr[n] = {{60, 10}, {100, 20}};
+     cout<<fractionalKnapsack(arr,n, w);
+    
+
+    return 0;
+}
