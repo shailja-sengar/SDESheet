@@ -1,0 +1,70 @@
+#include <iostream>
+#include<vector>
+#include<set>
+#include<algorithm>
+using namespace std;
+
+//tc:O(2^n * klog(x)), sc:O(2^n *k)
+/*void helper(vector<int>&arr, int ind, int n, set<vector<int>>&res, vector<int>&ds){
+    if(ind == n){
+        sort(ds.begin(), ds.end());
+        res.insert(ds);
+        return;
+    }
+    
+    ds.push_back(arr[ind]);
+    helper(arr, ind+1, n, res, ds);
+    
+    ds.pop_back();
+    helper(arr, ind+1, n, res, ds);
+}
+vector<vector<int>>subArrays(vector<int>&arr, int n){
+    vector<vector<int>>ans;
+    set<vector<int>>res;
+    vector<int>ds;
+    helper(arr, 0, n, res, ds);
+    
+    for(auto it=res.begin(); it!=res.end(); it++){
+        ans.push_back(*it);
+    }
+    
+    return ans;
+}*/
+
+//optimal:O(k* 2^n), sc:O(2^n * k)
+
+void helper(vector<int>&arr, int ind, int n, vector<vector<int>>&ans, vector<int>&ds){
+    ans.push_back(ds);
+    
+    for(int i=ind; i<n; i++){
+        if(i != ind && arr[i] == arr[i-1]) continue;
+        
+        ds.push_back(arr[i]);
+        helper(arr, i+1, n, ans, ds);
+        ds.pop_back();
+    }
+}
+vector<vector<int>>subArrays(vector<int>&arr, int n){
+    vector<vector<int>>ans;
+    vector<int>ds;
+    sort(arr.begin(), arr.end());
+    
+    helper(arr, 0, n, ans, ds);
+    
+    return ans;
+}
+int main()
+{
+    vector<int>arr = {1,2,2};
+    vector<vector<int>>ans = subArrays(arr, arr.size());
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<"[ ";
+        for(int j=0; j<ans[i].size(); j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<"]"<<endl;
+    }
+
+    return 0;
+}
