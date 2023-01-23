@@ -1,0 +1,41 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+//tc: O(2^t)*k, sc:O(k*x)
+void combinationSum(vector<int>&arr, int target, int ind, int n, vector<int>&ds, vector<vector<int>>&ans){
+    //base case
+    if(ind == n){
+        if(target == 0){
+            ans.push_back(ds);
+        }
+        return;
+    }
+    
+    //case 1: pick
+    if(arr[ind] <= target){
+        ds.push_back(arr[ind]);
+        combinationSum(arr, target-arr[ind], ind, n, ds, ans);
+        ds.pop_back();
+    }
+    
+    //case 2: not pick
+    combinationSum(arr, target, ind+1, n, ds,ans);
+}
+int main()
+{
+    vector<int>arr = {2,3,6,7};
+    int target = 7;
+    vector<int>ds;
+    int n = arr.size();
+    vector<vector<int>>ans;
+    combinationSum(arr, target, 0, n, ds, ans);
+
+    for(int i=0; i<ans.size(); i++){
+        for(int j=0; j<ans[0].size(); j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    return 0;
+}
