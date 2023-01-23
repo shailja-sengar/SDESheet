@@ -1,0 +1,45 @@
+#include <iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//tc:O((2^n * k *n/2)), sc:O(k*x)
+bool isPalindorme(string &str, int s, int e){
+    while(s <= e){
+        if(str[s] != str[e]) return false;
+        s++;
+        e--;
+    }
+    return true;
+}
+void palindromePartition(string &s, int ind, int n, vector<vector<string>>&ans, vector<string>&ds){
+    if(ind == n){
+        ans.push_back(ds);
+        return;
+    }
+    
+    for(int i=ind; i<n; i++){
+        //if from current index to ith index substring is palindrome then only do partition
+        //like ind=0, i=3, check from 0 to 3rd index substring is palindorme or not 
+        if(isPalindorme(s, ind, i) == true){
+            ds.push_back(s.substr(ind, i-ind +1));   //substr(include, exclude) so take one extra index by doing i-ind+1
+            palindromePartition(s, i+1, n, ans, ds);
+            ds.pop_back();
+        }
+    }
+}
+int main(){
+    string s = "aabb";
+    vector<vector<string>>ans;
+    vector<string>ds;
+    int n = s.size();
+    
+    palindromePartition(s, 0, n, ans, ds);
+    
+    for(int i=0; i<ans.size(); i++){
+        for(int j=0; j<ans[i].size(); j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+}
