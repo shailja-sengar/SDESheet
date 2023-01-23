@@ -1,0 +1,49 @@
+#include <iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//brute force: similar to combination 1 we just need to do ind+1 when we were picking the element
+                //but as we dont need duplicate so we can store each combination in the set then convert set to vector of vector
+                //tc: O(2^t * k * log n) extra log n for storing in set so we'll follow below approach
+
+void combinationSum2(vector<int>&arr, int ind, int n, int target, vector<vector<int>>&ans, vector<int>&ds){
+    //base case
+    if(target == 0){
+        ans.push_back(ds);
+        return;
+    }
+    
+    //for each positition, we run the for loop and check every index from the current index to last index
+    for(int i=ind; i<n; i++){
+        //check for the duplicate, i=current index inside the recursion call, ind=current recursion call
+        if(i > ind && arr[i] == arr[i-1]) continue;
+        if(arr[i] > target) break;     //if current index is greater than target then next values will also greater no need for further checking
+        
+        //pick 
+        ds.push_back(arr[i]);
+        combinationSum2(arr, i+1, n, target-arr[i], ans, ds);
+        ds.pop_back();
+    }
+}
+int main()
+{
+    vector<int>arr = {10, 1, 2, 7, 6, 1, 5};
+    int n = arr.size();
+    int target = 8;
+    sort(arr.begin(), arr.end());
+    vector<vector<int>>ans;
+    vector<int>ds;
+    
+    combinationSum2(arr, 0, n, target, ans, ds);
+    
+    for(int i=0; i<ans.size(); i++){
+        for(int j=0; j<ans[i].size(); j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    
+
+    return 0;
+}
