@@ -1,0 +1,152 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+//brute force: tc:O(n! * n) sc:O(1)
+/*class Solution{
+public:
+//in this safe function we just need to check left upper diagnoal, left rows, left down diagonal
+//we will not check on the right upper and down diagonal bcoz we are going left to right it is ovbious that right side column
+//ans rows will be empty
+//upper ans down in the same column will not check bcoz we are placing only 1 queen and we are going to next col
+    bool isSafe(int row, int col, vector<string>board, int n){
+        int dupRow = row;
+        int dupCol = col;
+        
+        //to check left upper diagonal
+        while(row >= 0 && col>=0){
+            if(board[row][col] == 'Q') 
+                return false;
+            row--;
+            col--;
+        }
+        
+        //as our actual row and col index has been changed so again assign them to real index
+        row = dupRow;
+        col = dupCol;
+        
+        //to check left rows, it means row will be same but clumn will be reduced
+        while(col>=0){
+            if(board[row][col] == 'Q') 
+                return false;
+            col--;
+        }
+        
+        col = dupCol;
+        row = dupRow;
+        
+        //to check left down diagonal
+        while(row<n && col>=0){
+            if(board[row][col] == 'Q')
+                return false;
+            row++;
+            col--;
+        }
+        
+        return true;
+    }
+public:
+    void helperNQueen(int col, int n, vector<string>&board, vector<vector<string>>&ans){
+        if(col == n){
+            ans.push_back(board);
+            return;
+        }
+        
+        for(int row=0; row<n; row++){
+            if(isSafe(row, col, board, n)){
+                board[row][col] = 'Q';
+                helperNQueen(col+1, n, board, ans);
+                board[row][col] = '.';
+            }
+        }
+    }
+public:
+  vector<vector<string>>nQueen(int n){
+      vector<vector<string>>ans;
+      //we will puch n size string inside n size vector of string
+      vector<string>board(n);
+      string str(n, '.');
+      for(int i=0; i<n; i++){
+          board[i] = str;
+      }
+      
+      helperNQueen(0, n, board, ans);
+      
+      return ans;
+  }  
+};
+*/
+
+//*************************XXXXXX***************************************************
+
+//optimal: optimization in isSafe function using hashing
+//to find the diagonal index for the left down diagnoal : row+col
+//to find the left upper diagonal : (n-1) + (col-row)
+//to find the left rows : check row
+class Solution{
+ public:
+    void helperNQueen(int col, int n, vector<string>&board, vector<vector<string>>&ans,
+                      vector<int>&left, vector<int>&leftUpper, vector<int>&leftDown){
+        
+        if(col == n){
+            ans.push_back(board);
+            return;
+        }
+        
+        for(int row=0; row<n; row++){
+            //check all 3 sides left rows, left upper, left  diagonal using formulaes
+            if(left[row] == 0 && leftDown[row+col] == 0 && leftUpper[n-1 + (col - row)] == 0){
+                board[row][col] = 'Q';
+                left[row] = 1;
+                leftDown[row+col] = 1;
+                leftUpper[n-1 + (col-row)] = 1;
+                
+                helperNQueen(col+1, n, board, ans, left, leftUpper, leftDown);
+                
+                //backtrack
+                board[row][col] = '.';
+                left[row] = 0;
+                leftDown[row+col] = 0;
+                leftUpper[n-1 + (col-row)] = 0;
+            }
+        }
+    }
+    
+    vector<vector<string>>nQueen(int n){
+        vector<vector<string>>ans;
+        vector<string>board(n);
+        string str(n, '.');
+        
+        for(int i=0; i<n; i++){
+            board[i] = str;
+        }
+        
+        //hashing vector
+        vector<int>left(n, 0);     //for left rows
+        vector<int>leftUpper(2*n-1, 0);   //for left upper diagonal
+        vector<int>leftDown(2*n-1, 0);    //for left down diagnoal
+        
+        helperNQueen(0, n, board, ans, left, leftUpper, leftDown);
+        
+        return ans;
+    }
+};
+int main()
+{
+    int n = 4;
+    Solution obj;
+    vector<vector<string>>ans;
+    
+    ans = obj.nQueen(n);
+    
+    cout<<"Total Arrangement: "<<endl;
+    for(int i=0; i<ans.size(); i++){
+        cout<<"Arrangement "<<i+1<<endl;
+        for(int j=0; j<ans[i].size(); j++){
+            cout<<ans[i][j]<<endl;
+        }
+        cout<<endl;
+    }
+
+    return 0;
+}
