@@ -1,0 +1,50 @@
+#include <iostream>
+#include<vector>
+#include<cstring>
+using namespace std;
+
+bool isSafe(int node, int n, vector<int>&color, int col, bool graph[101][101]){
+    for(int k=0; k<n; k++){
+        if(k != node && graph[k][node]==1 && color[k]==col)
+            return false;
+    }
+    return true;
+}
+bool solve(int node, bool graph[101][101], int n, int m, vector<int>&color){
+    if(node == n)
+        return true;
+        
+    for(int i=1; i<=m; i++){
+        if(isSafe(node, n, color, i, graph)){
+            color[node] = i;
+            if(solve(node+1, graph, n, m, color)) 
+                return true;
+            color[node] = 0;
+        }
+    }
+    return false;
+}
+int graphColor(bool graph[101][101], int n, int m){
+    vector<int>color(n, 0);
+    if(solve(0, graph, n, m, color))
+        return true;
+    return false;
+}
+int main()
+{
+    int n = 4;
+    int m = 3;
+    
+    bool graph[101][101];
+    memset(graph, false, sizeof graph);
+    
+    graph[0][1] = 1; graph[1][0] = 1;
+    graph[1][2] =1; graph[2][1] = 1;
+    graph[2][3] = 1; graph[3][2] = 1;
+    graph[3][0] = 1; graph[0][3] = 1;
+    graph[0][2] = 1; graph[2][0] = 1;
+    
+    cout<<graphColor(graph, n, m);
+
+    return 0;
+}
