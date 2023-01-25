@@ -1,0 +1,107 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+//tc:O(4^(m*n)), sc:O(m*n)
+
+/*void ratInMazeHelp(vector<vector<int>>&m, int row, int col, int n, string s, vector<string>&ans, 
+                    vector<vector<int>>&vis){
+    //base case
+    if(row >= n-1 && col>=n-1){
+        ans.push_back(s);
+        return;
+    }
+    
+    //down
+    if(row+1<n && m[row+1][col]==1 && vis[row+1][col]==0){
+        s+='D';
+        vis[row][col] = 1;
+        ratInMazeHelp(m, row+1, col, n, s, ans, vis);
+        vis[row][col] = 0;     //backtrack
+    }
+    
+    //left 
+    if(col-1>=0 && m[row][col-1]==1 && !vis[row][col-1]){
+        s+="L";
+        vis[row][col] = 1;
+        ratInMazeHelp(m, row, col-1, n, s, ans, vis);
+        vis[row][col] = 0;
+    }
+    
+    //right
+    if(col+1 <n && m[row][col+1]==1 && !vis[row][col+1]){
+        s += "R";
+        vis[row][col] = 1;
+        ratInMazeHelp(m, row, col+1, n, s, ans, vis);
+        vis[row][col] = 0;
+    }
+    
+    //up
+    if(row-1>=0 && m[row-1][col]==1 && !vis[row-1][col]){
+        s +="U";
+        vis[row][col] = 1;
+        ratInMazeHelp(m, row-1, col, n, s, ans, vis);
+        vis[row][col] = 0;
+        
+    }
+}
+vector<string>ratInMaze(vector<vector<int>>&m, int n){
+    vector<string>ans;
+    string s="";
+    vector<vector<int>>vis(n, vector<int>(n, 0));
+    if(m[0][0] == 1) 
+        ratInMazeHelp(m, 0, 0, n, s, ans, vis);
+    return ans;
+}*/
+
+void ratInMazeHelp(vector<vector<int>>&m, int row, int col, int n, string s, vector<string>&ans,
+                    vector<vector<int>>&vis, int dRow[], int dCol[]){
+                        
+        if(row >=n-1 && col>=n-1){
+            ans.push_back(s);
+            return;
+        }
+        
+        string dir = "DLRU";
+        for(int ind=0; ind<4; ind++){
+            int nextR = row + dRow[ind];
+            int nextC = col + dCol[ind];
+            
+            if(nextR>=0 && nextC>=0 && nextR<n && nextC<n && m[nextR][nextC]==1 && !vis[nextR][nextC]){
+                vis[nextR][nextC] = 1;
+                ratInMazeHelp(m, nextR, nextC, n, s+dir[ind], ans, vis, dRow, dCol);
+                vis[nextR][nextC] = 0;
+            }
+        }
+}
+vector<string>ratInMaze(vector<vector<int>>&m, int n){
+    vector<string>ans;
+    string s = "";
+    int dRow[] = {1, 0, 0, -1};
+    int dCol[] = {0, -1, 1, 0};
+    
+    vector<vector<int>>vis(n, vector<int>(n, 0));
+    
+    if(m[0][0]==1)
+        ratInMazeHelp(m, 0, 0, n, s, ans, vis, dRow, dCol);
+        
+    return ans;
+}
+int main()
+{
+    int n = 4;
+    vector<vector<int>>m = {
+        {1, 0, 0, 0},
+        {1, 1, 0, 1}, 
+        {1, 1, 0, 0},
+        {0, 1, 1, 1}  
+    };
+    
+    vector<string>ans;
+    
+    ans = ratInMaze(m, n);
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+    return 0;
+}
