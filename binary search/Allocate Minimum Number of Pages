@@ -1,0 +1,61 @@
+
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+//tc:O(nlogn), sc:O(1)
+bool isPossible(vector<int>&arr, int stu, int pages){
+    int count = 0;
+    int sum = 0;
+    
+    for(int i=0; i<arr.size(); i++){
+        if(sum + arr[i] > pages){
+            sum = arr[i];
+            count++;
+            
+            if(sum > pages) 
+                return false;
+        }
+        else 
+            sum += arr[i];
+    }
+    
+    if(count < stu) 
+        return true;
+    return false;
+}
+int minimumPages(vector<int>&arr, int stu, int n){
+    int ans = 0;
+    int sum = 0;
+    int mini = INT_MAX;
+    for(int i=0; i<n; i++){
+        mini = min(mini, arr[i]);
+        sum += arr[i];
+    }
+    
+    int start = mini;
+    int end = sum;
+    
+    while(start <= end){
+        int mid = start + (end- start)/2;
+        
+        if(isPossible(arr, stu, mid)){
+            ans = mid;
+            end = mid - 1;
+        }
+        else{
+            start = mid + 1;
+        }
+    }
+    
+    return ans;
+}
+int main(){
+    vector<int>arr = {12, 34, 67, 90};
+    int n = arr.size();
+    int stu = 2;
+    
+    cout<<minimumPages(arr, stu, n);
+    return 0;
+}
