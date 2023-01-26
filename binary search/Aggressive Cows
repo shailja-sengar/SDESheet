@@ -1,0 +1,64 @@
+#include<iostream>
+#include<vector>
+#include<climits>
+#include<algorithm>
+using namespace std;
+
+bool isPossible(int dist, vector<int>&arr, int cows){
+    int n =arr.size();
+    int k = arr[0];
+    cows--;
+    
+    for(int i=1; i<n; i++){
+        if(arr[i]-k >= dist){
+            cows--;
+            if(cows == 0)
+                return true;
+            k = arr[i];
+        }
+    }
+    return false;
+}
+
+//brute force: tc:O(n*m), sc:O(1)
+/*int minimumDistance(vector<int>&arr, int cows, int stalls){
+    int ans = INT_MIN;
+    int n = arr.size();
+    int maxDist = arr[n-1] - arr[0];
+    for(int i=1; i<=maxDist; i++){
+        if(isPossible(i, arr, cows)){
+            ans = max(ans, i);
+        }
+    }
+    return ans;
+}*/
+
+//optimal: using binary search, tc:O(nlogm), sc:O(1)
+int minimumDistance(vector<int>&arr, int cows, int stalls){
+    int ans = 0;
+    int n = arr.size();
+    int start = arr[0];
+    int end = arr[n-1] - arr[0];
+    
+    while(start <= end){
+        int mid = start + (end - start)/2;
+        
+        if(isPossible(mid, arr, cows)){
+            ans = mid;
+            start = mid + 1;
+        }
+        else{
+            end = mid - 1;
+        }
+    }
+    
+    return ans;
+}
+int main(){
+    vector<int>arr = {1,2,8,4,9};
+    int stalls = 5;
+    int cows = 3;
+    sort(arr.begin(), arr.end());
+    cout<<minimumDistance(arr, cows, stalls);
+    return 0;
+}
