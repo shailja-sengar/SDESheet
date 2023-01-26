@@ -1,0 +1,92 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+#include<iomanip>
+#include<climits>
+using namespace std;
+
+//naive: tc:O(n + m), sc:O(n+m)
+/*float median(vector<int>&arr1, vector<int>&arr2){
+    int i=0, j=0;
+    int n = arr1.size();
+    int m = arr2.size();
+    int k =0;
+    vector<int>mergedArr(n+m);
+    
+    while(i<n && j<m){
+        if(arr1[i] <= arr2[j]){
+            mergedArr[k] = arr1[i];
+            i++, k++;
+        }
+        else{
+            mergedArr[k] = arr2[j];
+            j++, k++;
+        }
+    }
+    
+    while(i<n){
+        mergedArr[k++] = arr1[i++];
+    }
+    while(j<m){
+        mergedArr[k++] = arr2[j++];
+    }
+    
+    n = n+m;
+    if(n%2 == 1){
+        return mergedArr[((n+1)/2)-1];
+    }
+    else{
+        return ((float)mergedArr[n/2 - 1] + (float)mergedArr[n/2])/2;
+    }
+}*/
+
+//optimal: using binary search, tc:O(log(min(n, m))), sc:O(1)
+float median(vector<int>&arr1, vector<int>&arr2){
+    if(arr2.size() < arr1.size()) return median(arr2, arr1);
+    
+    int n = arr1.size();
+    int m = arr2.size();
+    
+    int start=0, end = m;
+    int medianPos = ((n+m)+1)/2;
+    
+    while(start <= end){
+        int cut1 = start + (end - start)/2;
+        int cut2 = medianPos - cut1;
+        
+        int l1 = (cut1 == 0) ? INT_MIN : arr1[cut1-1];
+        int l2 = (cut2 == 0) ? INT_MIN : arr2[cut2 - 1];
+        int r1 = (cut1 == n) ? INT_MAX : arr1[cut1];
+        int r2 = (cut2 == m) ? INT_MAX : arr2[cut2];
+        
+        if((l1 <= r2) && (l2 <= r1)){
+            if((n+m)/2 == 0)
+                return (max(l1, l2) + min(r1, r2)) / 2.0;
+            else
+                return max(l1, l2);
+        }
+        else if(l1 > r2)
+            end = cut1 - 1;
+        else
+            start = cut1 + 1;
+            
+    }
+    return 0.0;
+    
+}
+int main()
+{
+    vector<int>arr1 = {1,4,7,10,12};
+    vector<int>arr2 = {2,3,6,15};
+    
+    cout<<fixed<<setprecision(5)<<median(arr1, arr2);
+
+    return 0;
+}
