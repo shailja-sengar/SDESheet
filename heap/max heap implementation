@@ -1,0 +1,97 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+class heap{
+    public:
+        int arr[101];
+        int size;
+        
+        heap(){
+            arr[0] = -1;
+            size = 0;
+        }
+        
+        void insert(int val){
+            //step1: put the val in the last of the array
+            size = size + 1;
+            int index = size;
+            arr[index] = val;
+            
+            //step2 : take this val to it's correct index
+            while(index > 1){
+                int parent = index/2;
+                //if this val is greater than it's parent
+                if(arr[index] > arr[parent]){
+                    swap(arr[index], arr[parent]);
+                    index = parent;
+                }
+                else{
+                    return;
+                }
+            }
+        }
+        
+        //deletion in heap means, delete the root node
+        void deleteFromHeap(){
+            if(size == 0)
+            {
+                cout<<"nothig to delete"<<endl;
+                return;
+            }
+            //step1: put this value in the root
+            arr[1] = arr[size];
+            
+            //step2: remove this value
+            size--;
+            
+            //step3: take the new root to it's right position
+            int i = 1;
+            while(i < size){
+                int leftChild = 2*i;
+                int rightChild = 2*i+1;
+                
+                if(leftChild < size && arr[i] < arr[leftChild]){
+                    swap(arr[i], arr[leftChild]);
+                    i = leftChild;
+                }
+                else if(rightChild < size && arr[i] < arr[rightChild]){
+                    swap(arr[i], arr[rightChild]);
+                    i = rightChild;
+                }
+                else{
+                    return;
+                }
+            }
+        }
+        
+        void printHeap(){
+            int i=1;
+            while(i <= size){
+                cout<<arr[i]<<" ";
+                i++;
+            }
+            cout<<endl;
+        }
+};
+
+int main()
+{
+    heap h;
+    
+    h.insert(50);
+    h.insert(52);
+    h.insert(53);
+    h.insert(54);
+    h.insert(55);
+    
+    cout<<"Before deleting from heap: "<<endl;
+    h.printHeap();
+    
+    h.deleteFromHeap();
+    
+    cout<<"After deleting from heap: "<<endl;
+    h.printHeap();
+
+    return 0;
+}
