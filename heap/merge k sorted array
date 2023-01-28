@@ -1,0 +1,68 @@
+#include <iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+//brute store : push all the elements in a vector and sort that, 
+                //tc:(n*klog(n*k)), sc:O(n*k)
+                
+
+//optimal: using min heap, tc:O(n*k*log(k)), sc:O(k)
+class data{
+    public:
+        int val, arrPos, valPos;
+  
+        data(int v, int aPos, int vPos){
+            val = v;
+            arrPos = aPos;
+            valPos = vPos;
+        }
+};
+struct myComp{
+    bool operator()(data &d1, data &d2){
+        return d1.val > d2.val;
+    }
+};
+
+vector<int>mergeKSortedArrays(vector<vector<int>>&arr){
+    int n = arr.size();
+    vector<int>ans;
+    priority_queue<data, vector<data>, myComp>myMaxH;
+    
+    //push all the 0th index element of the each list inside the maxheap
+    for(int i=0; i<n; i++){
+        data d(arr[i][0], i, 0);
+        myMaxH.push(d);
+    }
+    
+    while(!myMaxH.empty()){
+        auto curr = myMaxH.top();
+        myMaxH.pop();
+        
+        //push the top element of heap in the answer array
+        ans.push_back(curr.val);
+        
+        //push next element of that element which we have poped 
+        int vPos = curr.valPos;
+        int aPos = curr.arrPos;
+        
+        if(vPos+1 < arr[aPos].size()){
+            data d1(arr[aPos][vPos+1], aPos, vPos+1);
+            myMaxH.push(d1);
+        }
+    }
+    
+    return ans;
+}
+int main()
+{
+    vector<vector<int>>arr = {{3,5,9},{1,2,3,8}};
+    
+    vector<int>ans = mergeKSortedArrays(arr);
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+
+    return 0;
+}
