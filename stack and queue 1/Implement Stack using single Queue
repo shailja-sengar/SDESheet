@@ -1,0 +1,105 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+//using 2 queues: tc:O(n), sc:O(n), 2 queues are used
+/*class Stack{
+  public:
+    queue<int>q1, q2;
+    
+    void push(int val){
+        //step1: first push in q2
+        q2.push(val);
+        
+        //step2: transfer elements from q1 to q2 one by one
+        while(!q1.empty()){
+            q2.push(q1.front());
+            q1.pop();
+        }
+        
+        //step3: swap the names of both the queues        
+        queue<int>q = q1;
+        q1 = q2;
+        q2 = q;
+    }
+    
+    void pop(){
+        if(q1.size() == 0)
+            return ;
+        q1.pop();
+    }
+    
+    int top(){
+        if(q1.empty())
+            return -1;
+       return q1.front();
+    }
+    
+    int size(){
+        return q1.size();
+    }
+};*/
+
+//using single queue, tc:O(n), sc:O(n), only 1 queue is using
+class Stack{
+  public:
+    queue<int>q;
+    
+    void push(int val){
+        //step 1: push the value in the queue
+        q.push(val);
+        
+        //step2: run the loop till the one lesser than the size of queue, push the front element and pop that
+        for(int i=0; i<q.size()-1; i++){
+            q.push(q.front());
+            q.pop();
+        }
+    }
+    
+    void pop(){
+        if(q.empty())
+            return;
+        q.pop();
+    }
+    
+    int top(){
+        if(q.empty())
+            return -1;
+        return q.front();
+    }
+    
+    int size(){
+        if(q.empty())
+            return -1;
+        return q.size();
+    }
+};
+int main(){
+    Stack st;
+    
+    st.push(3);
+    st.push(2);
+    st.push(1);
+    
+    cout<<st.top()<<endl;
+    st.pop();
+    
+    cout<<st.top()<<endl;
+    st.pop();
+    
+    cout<<st.top()<<endl;
+    cout<<st.size();
+    
+    return 0;
+    
+}
+
