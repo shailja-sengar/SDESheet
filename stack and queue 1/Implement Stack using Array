@@ -2,7 +2,7 @@
 #include<vector>
 using namespace std;
 
-//tc:O(n), sc:O(n)
+//all functions take time O(1), sc:O(n)
 class Stack{
     int size;
     int *arr;
