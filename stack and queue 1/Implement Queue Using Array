@@ -1,0 +1,80 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+//all the functions take O(1) time, sc:O(n)
+class Queue{
+  int cnt;
+  int front;
+  int rear;
+  int size;
+  int *arr;
+  
+  public:
+    Queue(){
+        cnt = 0;
+        front = 0;
+        rear = 0;
+        size = 6;
+        arr = new int[size];
+    }
+    
+    void push(int val){
+        if(cnt == size){
+            cout<<"Queue is full, can not push "<<val<<endl;
+            return ;
+        }
+        
+        arr[rear%size] = val;
+        rear++;
+        cnt++;
+    }
+    
+    void pop(){
+        if(cnt == 0){
+            cout<<"There is no element to pop"<<endl;
+            return;
+        }
+        
+        arr[front%size] = -1;
+        front++;
+        cnt--;
+    }
+    
+    int frontEle(){
+        if(cnt == 0){
+            cout<<"There is not a single element in queue."<<endl;
+            return -1;
+        }
+        
+        return arr[front%size];
+    }
+    
+    int totalEle(){
+        return cnt;
+    }
+    
+    void printQueue(){
+        for(int i=front; i<rear; i++){
+            cout<<arr[i%size]<<" ";
+        }
+        cout<<endl;
+    }
+  
+};
+
+int main(){
+   Queue q;
+   q.push(6);
+  q.push(4);
+  q.push(14);
+  q.push(24);
+  q.push(34);
+  cout << "The peek of the queue before deleting any element " << q.frontEle() << endl;
+  cout << "The size of the queue before deletion " << q.totalEle() << endl;
+  cout << "The first element to be deleted "<< endl;
+  q.pop();
+  cout << "The peek of the queue after deleting an element " << q.frontEle() << endl;
+  cout << "The size of the queue after deleting an element " << q.totalEle() << endl;
+    
+}
