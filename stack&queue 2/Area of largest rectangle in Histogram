@@ -1,0 +1,105 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+#include<stack>
+#include<climits>
+using namespace std;
+
+//brute force: for each index find the minimum and then find the area , tc:O(n^2), sc:O(1)
+/*int largestRectangularArea(vector<int>&arr, int n){
+    int maxArea = INT_MIN;
+    
+    for(int i=0; i<n; i++){
+        int minHeight = INT_MAX;
+        for(int j=i; j<n; j++){
+            minHeight = min(minHeight, arr[j]);
+            maxArea = max(maxArea, minHeight * (j-i+1));
+        }
+    }
+    
+    return maxArea;
+}*/
+
+//efficint: using stack, tc:O(n), sc:O(3n)
+/*int largestRectangularArea(vector<int>&arr, int n){
+    vector<int>leftSmaller(n, 0);
+    vector<int>rightSmaller(n, 0);
+    stack<int>st;
+    
+    //to find left smaller(previous smaleer)
+    for(int i=0; i<n; i++){
+        while(!st.empty() && arr[st.top()] >= arr[i])
+            st.pop();
+            
+        if(!st.empty())
+            leftSmaller[i] = st.top()+1;      //st.top() -> index of the found smaller element 
+            
+        st.push(i);    //this time we are pushing the index
+    }
+    
+    //empty the stack
+    while(!st.empty())
+        st.pop();
+        
+    //to find right smaller(next smaller element)
+    for(int i=n-1; i>=0; i--){
+        while(!st.empty() && arr[st.top()] >= arr[i])
+            st.pop();
+            
+        if(!st.empty())
+            rightSmaller[i] = st.top()-1;
+            
+        st.push(i);
+    }
+    
+    //interate the leftSmaller and rightSmaller array and find the maxArea
+    int maxArea = INT_MIN;
+    for(int i=0; i<n; i++){
+        int width = rightSmaller[i] - leftSmaller[i] + 1;
+        int height = arr[i];
+        
+        maxArea = max(maxArea, height * width);
+    }
+    
+    return maxArea;
+}*/
+
+//optimal: previous approach had too much passes so the below works only in one pass, tc:O(n), sc:O(1)
+int largestRectangularArea(vector<int>&arr, int n){
+    int maxArea = 0;
+    stack<int>st;
+    
+    for(int i=0; i<=n; i++){
+        while(!st.empty() && (i==n || arr[st.top()] >= arr[i])){
+            int height = arr[st.top()];
+            st.pop();
+            
+            int width;
+            if(st.empty())
+                width = i;
+            else
+                width = i - st.top() - 1;
+                
+            maxArea = max(maxArea, width*height);
+            
+        }
+        st.push(i);
+    }
+    return maxArea;
+}
+int main()
+{
+    vector<int>arr = {2,1,5,6,2,3};
+    int n = arr.size();
+    
+    cout<<largestRectangularArea(arr, n);
+    
+    return 0;
+}
