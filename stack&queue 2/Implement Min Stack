@@ -1,0 +1,116 @@
+
+#include <iostream>
+#include<vector>
+#include<stack>
+#include<climits>
+using namespace std;
+
+//sol1: using pair wise, tc:O(1), sc:O(2n)
+/*class MinStack{
+  public:
+    //pushing value, current minimum
+    stack<pair<int, int>>st;
+        
+    void push(int val){
+        if(st.empty()){
+            st.push({val, val});
+        }
+            
+            
+        else if(!st.empty() && st.top().second < val)
+        {
+            st.push({val, st.top().second});
+        }
+        
+        else if(!st.empty() && st.top().second > val){
+            st.push({val, val});
+        }
+        
+        cout<<"Pushed Element: "<<val<<endl;
+    }
+    
+    int getMin(){
+        return st.top().second;
+    }
+    
+    void pop(){
+        cout<<"Poped Element: "<<st.top().first<<endl;
+        st.pop();
+        
+    }
+    
+    int top(){
+        return st.top().first;
+    }
+};*/
+
+//sol2: using maths, tc:O(1), sc:O(n)
+class MinStack{
+  public:
+    
+    stack<int>st;
+    int mini = INT_MAX;
+    
+    void push(int val){
+        if(st.empty()){
+            st.push(val);
+            mini = val;
+        }
+            
+            
+        else if(!st.empty() && st.top() < val){
+            st.push(val);
+        }
+        
+        else{
+            int modifiedVal = (2*val) - mini;
+            st.push(modifiedVal);
+            mini = val;
+        }
+        
+        cout<<"Pushed Element: "<<val<<endl;    
+    }
+    
+    int getMin(){
+        return mini;
+    }
+    
+    int top(){
+        //when top is modifiedVal return mini as top
+        if(st.top() < mini)
+            return mini;
+        
+        return st.top();
+    }
+    
+    void pop(){
+        //when top is modifiedVal then update the Min
+        if(st.top() < mini){
+             cout<<"Pop Element: "<<mini<<endl;
+            mini = (2*mini) - st.top();
+            st.pop();
+        }
+        else{
+            cout<<"Pop element: "<<st.top()<<endl;
+            st.pop();
+        }
+    }
+};
+int main()
+{
+    MinStack stack;
+    
+    stack.push(-2);
+    stack.push(0);
+    stack.push(-3);
+    
+    cout<<"Minimum element: "<<stack.getMin()<<endl;
+    
+    stack.pop();
+    
+    cout<<"Top element: "<<stack.top()<<endl;
+    
+    cout<<"Minimum element: "<<stack.getMin()<<endl;
+
+    return 0;
+}
