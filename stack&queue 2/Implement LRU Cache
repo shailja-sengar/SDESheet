@@ -1,0 +1,107 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<deque>
+#include<unordered_map>
+using namespace std;
+
+class LRU{
+  
+  public:
+   class node{
+     public:
+        int key, val;
+        node* next;
+        node* prev;
+        
+        node(int key_, int val_){
+            key = key_;
+            val = val_;
+        }
+   };
+   
+   //make head and tail node
+   node* head = new node(-1, -1);
+   node* tail = new node(-1, -1);
+   
+   int size;
+   unordered_map<int, node*>mp;
+   
+   LRU(int size_){
+       size = size_;
+       head->next = tail;
+       tail->prev = head;
+   }
+   
+   //to add node after the head
+   void addNode(node* newNode){
+       node* temp = head->next;
+       newNode->next = temp;
+       newNode->prev = head;
+       head->next = newNode;
+       temp->prev = newNode;
+   }
+   
+   //to delete the node
+   void deleteNode(node* dNode){
+       node* delNext = dNode->next;
+       node* delPrev = dNode->prev;
+       delNext->prev = delPrev;
+       delPrev->next = delNext;
+   }
+   
+   //to get the key's value from hashmap
+   int getVal(int key_){
+       if(mp.find(key_) != mp.end()){
+           node* resNode = mp[key_];
+           int res = resNode->val;
+           mp.erase(key_);
+           deleteNode(resNode);
+           addNode(resNode);
+           mp[key_] = head->next;
+           return res;
+       }
+       return -1;
+   }
+   
+   void put(int key_, int val_){
+       if(mp.find(key_) != mp.end()){
+           node* existingNode = mp[key_];
+           mp.erase(key_);
+           deleteNode(existingNode);
+       }
+       
+       if(mp.size() == size){
+           mp.erase(tail->prev->key);
+           deleteNode(tail->prev);
+       }
+       
+       addNode(new node(key_, val_));
+       mp[key_] = head->next;
+       
+   }
+};
+int main()
+{
+    LRU s(3);
+    
+    s.put(1, 10);
+    cout<<" has inserted (1, 10)"<<endl;
+    s.put(3, 15);
+    cout<<" has inserted(3, 15)"<<endl;
+    s.put(2, 26);
+    cout<<" has inserted(2, 26)"<<endl;
+    
+    cout<<"get the value: "<<s.getVal(3)<<endl;
+    s.put(4, 25);
+    cout<<" has inserted (4, 25)"<<endl;
+    
+
+    return 0;
+}
