@@ -1,0 +1,54 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+vector<int>miniOfK(vector<int>&arr, int k){
+    deque<int>dq;
+    vector<int>ans;
+    int n = arr.size();
+    
+    for(int i=0; i<n; i++){
+        //to check boundary if we store the element in front that is not present in k size window
+        if(!dq.empty() && dq.front() == i-k)
+            dq.pop_front();
+            
+        //pop the element from back if they are greater than the current element
+        while(!dq.empty() && arr[dq.back()] > arr[i])
+            dq.pop_back();
+            
+        //push the elemnt's index if it is greater than the back elements
+        dq.push_back(i);
+        
+        //check maximum for each k size window
+        if(i >= k-1) 
+            ans.push_back(arr[dq.front()]);
+    }
+    
+    return ans;
+}
+vector<int>maximumOfMini(vector<int>&arr){
+    int n = arr.size();
+    vector<int>ans;
+    vector<int>kMini;
+    
+    for(int k=1; k<=n; k++){
+        //find for every k size minimum element
+        kMini = miniOfK(arr, k);
+        
+        //find the maximum of all the minimum of current k        
+        int maxi = *max_element(kMini.begin(), kMini.end());
+        ans.push_back(maxi);
+    }
+    
+    return ans;
+}
+int main(){
+    vector<int>arr = {1,2,3,4};
+    vector<int>ans = maximumOfMini(arr);
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+}
