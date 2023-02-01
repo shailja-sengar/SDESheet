@@ -1,0 +1,88 @@
+#include<iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+
+//brute force: tc:O(n^2), sc:O(1)
+/*int celebrity(vector<vector<int>>&mat){
+    int m = mat.size();
+    int n = mat[0].size();
+    
+    for(int i=0; i<m; i++){
+        int currPerson = i;
+        int flag = 0;
+        //check for all column
+        for(int j=0; j<n; j++){
+            if(mat[currPerson][j] != 0){
+                flag = 1;
+                break;
+            }
+        }
+        
+        //check for all row
+        for(int k=0; k<m; k++){
+            if(mat[i][currPerson] != 0)
+            {
+                flag = 1;
+                break;
+            }
+        }
+        
+        if(flag == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}*/
+
+//optimal: tc:O(n), sc:O(n);
+
+bool knows(int a, int b, vector<vector<int>>mat){
+    return mat[a][b];
+}
+int celebrity(vector<vector<int>>&mat){
+    stack<int>st;
+    int n = mat.size();
+    
+    //step1: put all the row index in the stack which shows the number of persons
+    for(int i=0; i<n; i++){
+        st.push(i);
+    }
+    
+    //Step2: find the potential candidate for celebrity
+    while(st.size() > 1){
+        int a = st.top();
+        st.pop();
+        
+        int b = st.top();
+        st.pop();
+        
+        //if a knows b, then a can't be celebrity
+        if(knows(a, b, mat))
+            st.push(b);
+        
+        else{
+            st.push(a);
+        }
+    }
+    
+    //step3: stack will reamin with only 1 person so verify that person
+    int candidate = st.top();
+    st.pop();
+    
+    for(int i=0; i<n; i++){
+        if((i!= candidate) && (knows(candidate, i, mat) || !knows(i, candidate, mat)))
+            return -1;
+    }
+    
+    return candidate;
+}
+int main(){
+    vector<vector<int>>mat = {
+        {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 1, 0}
+    };
+    
+    cout<<celebrity(mat);
+    return 0;
+}
