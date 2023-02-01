@@ -1,0 +1,63 @@
+#include<iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+//using stack: tc:O(n),sc:O(n)
+vector<int>maximumOfMini(vector<int>&arr){
+    int n = arr.size();
+    vector<int>left(n+1, -1);
+    vector<int>right(n+1, n);
+    stack<int>st;
+    
+    //Step1: find left smaller or previous smaller for each index
+    for(int i=0; i<n; i++){
+        while(!st.empty() && arr[st.top()] >= arr[i])
+            st.pop();
+            
+        if(!st.empty())
+            left[i] = st.top();
+            
+        st.push(i);
+    }
+    
+    //step2: empty the stack
+    while (!st.empty())
+        st.pop();
+        
+    //Step2: find right smaller or next smaller for each index
+    for(int i=n-1; i>=0; i--){
+        while(!st.empty() && arr[st.top()] >= arr[i])
+            st.pop();
+        
+        if(!st.empty())
+            right[i] = st.top();
+        
+        st.push(i);
+    }
+    
+    //Step3: make answer vector of n+1 size and fill with 0
+    vector<int>ans(n+1, 0);
+    
+    //Step4: fill the ans by calculating length
+    for(int i=0; i<n; i++){
+        int len = right[i] - left[i] -1;
+        
+        ans[len] = max(ans[len], arr[i]);
+    }
+    
+    //Step5: it is possibile that there will be remainig empty place in ans so fill those
+    for(int i=n-1; i>=1; i--){
+        ans[i] = max(ans[i], ans[i+1]);
+    }
+    
+    return ans;
+}
+int main(){
+    vector<int>arr = {10,20,30,50,10,70,30};
+    
+    vector<int>ans = maximumOfMini(arr);
+    
+    for(int i=1; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+}
