@@ -1,0 +1,75 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<string>
+#include<algorithm>
+#include<stack>
+using namespace std;
+
+//brute force: tc:O(n), sc:O(1)
+/*string reverseString(string &str){
+    stack<string>st;
+    string currWord = "";
+    str += " ";
+    
+    for(int i=0; i<str.size(); i++){
+        if(str[i] == ' '){
+            st.push(currWord);
+            currWord = "";
+        }
+        else currWord += str[i];
+    }
+    
+    string ans = "";
+    while(st.size() != 1){
+        ans += st.top() + " ";
+        st.pop();
+    }
+    ans += st.top();
+    return ans;
+}*/
+
+//optimal: tc:O(n), sc:O(1)
+string reverseString(string s){
+    int left = 0;
+    int n = s.length();
+    
+    string temp="";
+    string ans="";
+    
+    //Iterate the string and keep on adding to form a word
+    //If empty space is encountered then add the current word to the result
+    while (left < n) {
+        char ch= s[left];
+        if (ch != ' ') {
+            temp += ch;
+        } else if (ch == ' ') {
+            if (ans!="") ans = temp + " " + ans;
+            else ans = temp;
+            temp = "";
+        }
+        left++;
+    }
+    
+    //If not empty string then add to the result(Last word is added)
+    if (temp!="") {
+        if (ans!="") ans = temp + " " + ans;
+        else ans = temp;
+    }
+    
+    return ans; 
+}
+int main()
+{
+    string str = "this is an amazing program";
+    
+    cout<<reverseString(str);
+
+    return 0;
+}
