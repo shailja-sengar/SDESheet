@@ -1,0 +1,82 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+
+struct node{
+    int data;
+    struct node* right;
+    struct node* left;
+    
+};
+
+node* newNode(int data){
+     node* temp = new node;
+     temp->data = data;
+     temp->left = NULL;
+     temp->right = NULL;
+    return temp;
+}
+
+//using recursion, tc:O(n), sc:O(n)
+/*void preorder(node* root, vector<int>&arr){
+    if(root == NULL)
+        return;
+        
+    arr.push_back(root->data);
+    preorder(root->left, arr);
+    
+    preorder(root->right, arr);
+}*/
+
+//iteratively: tc:O(n), sc:O(n)
+vector<int>preorder(node* root){
+    vector<int>ans;
+    stack<node*>st;
+    
+    while(true){
+        if(root != NULL){
+            st.push(root);
+            ans.push_back(root->data);
+            root = root->left;
+        }
+        else{
+            if(st.empty()) break;
+            root = st.top();
+            st.pop();
+            root = root->right;
+        }
+    }
+    return ans;
+}
+
+int main()
+{
+    struct node* root = newNode(1);
+    root -> left = newNode(2);
+  root -> right = newNode(3);
+  root -> left -> left = newNode(4);
+  root -> left -> right = newNode(5);
+  root -> left -> right -> left = newNode(8);
+  root -> right -> left = newNode(6);
+  root -> right -> right = newNode(7);
+  root -> right -> right -> left = newNode(9);
+  root -> right -> right -> right = newNode(10);
+  
+  vector<int>arr = preorder(root);
+  
+  
+  for(int i=0; i<arr.size(); i++){
+      cout<<arr[i]<<" ";
+  }
+
+    return 0;
+}
