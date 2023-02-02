@@ -1,0 +1,52 @@
+#include<iostream>
+#include<unordered_map>
+#include<climits>
+using namespace std;
+
+//tc:O(n), sc:O(1)
+int myAtoi(string s) {
+        long ans=0;
+        int sign = +1;
+        int i=0;
+        int n = s.size();
+        //to remove leading whitespaces
+        while(i<n && s[i] == ' ')
+            i++;
+
+        //now start travarsing after all the spaces index
+        s = s.substr(i);
+
+        //check for sign
+        if(s[0] == '-')
+            sign = -1;
+        
+        //make variable to avoid overflow
+        int mini = INT_MIN, maxi=INT_MAX;
+
+        //if 0th index was - then start travarsing from 1 index else 0 index
+        i = (s[0]=='-'||s[0]=='+') ? 1 : 0;
+
+        //check remainig string
+        while(i< n){
+            //whenever we see non digit char come out from loop
+            if(s[i]==' ' || !isdigit(s[i])) break;
+
+            ans = ans*10 + (s[i] - '0');
+
+            //check for underflow
+            if(sign == -1 && -1*ans < mini) return mini;
+
+            //check for overflow
+            if(sign==1 && ans > maxi) return maxi;
+
+            i++;
+        }
+
+        return (int)(sign*ans);
+       
+    }
+int main(){
+    string str = "   ac1234";
+    
+    cout<<myAtoi(str);
+}
