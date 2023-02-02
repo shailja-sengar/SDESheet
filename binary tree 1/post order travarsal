@@ -1,0 +1,83 @@
+
+#include <iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+
+struct node{
+    int data;
+    struct node* right;
+    struct node* left;
+    
+};
+
+node* newNode(int data){
+     node* temp = new node;
+     temp->data = data;
+     temp->left = NULL;
+     temp->right = NULL;
+    return temp;
+}
+
+//using recursion, tc:O(n), sc:O(n)
+/*void postorder(node* root, vector<int>&arr){
+    if(root == NULL)
+        return;
+        
+    
+    postorder(root->left, arr);
+    
+    postorder(root->right, arr);
+    
+    arr.push_back(root->data);
+}*/
+
+//iteratively: tc:O(n), sc:O(n)
+vector<int>postorder(node* root){
+    vector<int>ans;
+    stack<node*>st1;
+    stack<node*>st2;
+    
+    st1.push(root);
+    while(!st1.empty()){
+        root = st1.top();
+        st1.pop();
+        st2.push(root);
+        
+        if(root->left != NULL)
+            st1.push(root->left);
+        if(root->right != NULL)
+            st1.push(root->right);
+    }
+    
+    while(!st2.empty()){
+        node* curr = st2.top();
+        ans.push_back(curr->data);
+        st2.pop();
+    }
+    
+    return ans;
+}
+
+int main()
+{
+    struct node* root = newNode(1);
+    root -> left = newNode(2);
+  root -> right = newNode(3);
+  root -> left -> left = newNode(4);
+  root -> left -> right = newNode(5);
+  root -> left -> right -> left = newNode(8);
+  root -> right -> left = newNode(6);
+  root -> right -> right = newNode(7);
+  root -> right -> right -> left = newNode(9);
+  root -> right -> right -> right = newNode(10);
+  
+  vector<int>arr = postorder(root);
+  
+  
+  for(int i=0; i<arr.size(); i++){
+      cout<<arr[i]<<" ";
+  }
+
+    return 0;
+}
