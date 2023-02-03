@@ -1,0 +1,89 @@
+
+#include <iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+
+struct node{
+  int data;
+  node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n) sc:O(n)
+void allTravarsal(node* root, vector<int>&pre, vector<int>&in, vector<int>&post){
+    //push {node, no of times it is repeating}
+    stack<pair<node*, int>>st;
+    
+    st.push({root, 1});
+    
+    while(!st.empty()){
+        auto it = st.top();
+        st.pop();
+        
+        //case 1: if node is appearing 1 it means this should be in pre Order
+        if(it.second == 1){
+            pre.push_back(it.first->data);
+            it.second++;
+            st.push(it);
+            
+            if(it.first->left != NULL)
+                st.push({it.first->left, 1});
+        }
+        
+        //case2: if node is appearing 2nd time then this should be in inorder
+        else if(it.second == 2){
+            in.push_back(it.first->data);
+            it.second++;
+            st.push(it);
+            
+            if(it.first->right != NULL)
+                st.push({it.first->right, 1});
+        }
+        
+        //case3: if node is appearing 3rd time this should be in post Order
+        else{
+            post.push_back(it.first->data);
+        }
+    }
+}
+int main()
+{
+    struct node* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->left->right->left = newNode(6);
+    root->right->right = newNode(7);
+    
+    vector<int>pre, in, post;
+    
+    allTravarsal(root, pre, in, post);
+    
+    cout<<"Pre Order: ";
+    for(int i=0; i<pre.size(); i++)
+        cout<<pre[i]<<" ";
+    
+    cout<<endl;
+    
+    cout<<"In Order: ";
+    for(int i=0; i<in.size(); i++)
+        cout<<in[i]<<" ";
+    
+    cout<<endl;
+    
+    cout<<"Post Order: ";
+    for(int i=0; i<post.size(); i++)
+        cout<<post[i]<<" ";
+        
+
+    return 0;
+}
