@@ -1,0 +1,83 @@
+
+#include <iostream>
+#include<vector>
+#include<queue>
+#include<map>
+#include<set>
+#include <iterator>
+using namespace std;
+
+struct node{
+  int data;
+  node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n*logn*logn*logn), sc:O(n)
+vector<vector<int>>vertical(node* root){
+    map<int, map<int, multiset<int>>>mp;
+    queue<pair<node*, pair<int, int>>>q;
+    
+    q.push({root, {0, 0}});
+    
+    while(!q.empty()){
+        auto it = q.front();
+        q.pop();
+        
+        node* cur = it.first;
+        int vertical=it.second.first;
+        int level = it.second.second;
+        mp[vertical][level].insert(cur->data);
+        
+        if(cur->left){
+            q.push({cur->left, {vertical-1, level+1}});
+        }
+        
+        if(cur->right){
+            q.push({cur->right, {vertical+1, level+1}});
+        }
+    }
+    
+    vector<vector<int>>ans;
+    
+    for(auto it : mp){
+        vector<int>col;
+        for(auto i : it.second){
+            col.insert(col.end(), i.second.begin(), i.second.end());
+        }
+        ans.push_back(col);
+    }
+    
+    return ans;
+}
+
+int main()
+{
+    struct node* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->left->right->left = newNode(6);
+    root->right->right = newNode(7);
+    
+    vector<vector<int>>ans;
+    ans = vertical(root);
+    
+    for(int i=0; i<ans.size(); i++){
+        for(int j=0; j<ans[i].size(); j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+        
+
+    return 0;
+}
