@@ -1,0 +1,71 @@
+
+#include <iostream>
+#include<vector>
+#include<queue>
+#include<map>
+using namespace std;
+
+struct node{
+  int data;
+  node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n), sc:O(n)
+vector<int>topView(node* root){
+    vector<int>ans;
+    queue<pair<node*, int>>q;
+    map<int,int>mp;
+    
+    q.push({root, 0});
+    
+    while(!q.empty()){
+        auto it = q.front();
+        q.pop();
+        
+        node* currNode = it.first;
+        int line = it.second;
+        
+        //if line index is not present then only push the data, if already present then don't push
+        if(mp.find(line) == mp.end())
+            mp[line] = currNode->data;
+        
+        if(currNode->left != NULL)
+            q.push({currNode->left, line-1});
+            
+        if(currNode->right != NULL)
+            q.push({currNode->right, line+1});
+    }
+    
+    for(auto it : mp){
+        ans.push_back(it.second);
+    }
+    
+    return ans;
+}
+int main()
+{
+    struct node* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->left->right->left = newNode(6);
+    root->right->right = newNode(7);
+    
+    vector<int>ans = topView(root);
+    
+    cout<<"Top View: "<<endl;
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+
+    return 0;
+}
