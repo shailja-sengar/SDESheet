@@ -1,0 +1,68 @@
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+struct node{
+    int data;
+    struct node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n), sc:O(H), h->height of the tree
+void leftView(node* root, int level, vector<int>&left){
+    if(root == NULL) return;
+    
+    if(left.size() == level)
+        left.push_back(root->data);
+        
+    //for the left view Root Right Left
+    leftView(root->left, level+1, left);
+    leftView(root->right, level+1, left);
+}
+
+void rightView(node* root, int level, vector<int>&right){
+    if(root == NULL)
+        return;
+    if(right.size() == level)
+        right.push_back(root->data);
+    
+    //for the right side view Root Left right
+    rightView(root->right, level+1, right);
+    rightView(root->left, level+1, right);
+}
+int main()
+{
+    struct node* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->left->right->left = newNode(6);
+    root->right->right = newNode(7);
+    
+    vector<int>left;
+    vector<int>right;
+    
+    leftView(root, 0, left);
+    rightView(root, 0, right);
+    
+    cout<<"Left side view: "<<endl;
+    for(int i=0; i<left.size(); i++){
+        cout<<left[i]<<" ";
+    }
+    
+    cout<<endl;
+    cout<<"Right side view: "<<endl;
+    for(int i=0; i<right.size(); i++){
+        cout<<right[i]<<" ";
+    }
+    return 0;
+}
