@@ -1,0 +1,104 @@
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:o(n), sc:O(n)
+bool isLeaf(node* root){
+    return !root->left && !root->right;
+}
+
+void addLeft(node* root, vector<int>&res){
+    node* temp = root->left;
+    
+    while(temp){
+        if(isLeaf(temp) == false)
+            res.push_back(temp->data);
+            
+        if(temp->left)
+            temp = temp->left;
+            
+        else
+            temp = temp->right;
+    }
+}
+
+void addRight(node* root, vector<int>&res){
+    vector<int>temp;
+    node* cur = root->right;
+    while(cur){
+        if(isLeaf(cur) == false)
+            temp.push_back(cur->data);
+            
+        if(cur->right)
+            cur = cur->right;
+        else
+            cur = cur->left;
+    }
+    
+    for(int i=temp.size()-1; i>=0; i--){
+        res.push_back(temp[i]);
+    }
+}
+
+void addLeaf(node* root, vector<int>&res){
+    if (isLeaf(root)) {
+    res.push_back(root -> data);
+    return;
+  }
+  if (root -> left) addLeaf(root -> left, res);
+  if (root -> right) addLeaf(root -> right, res);
+}
+
+vector<int>boundaryTravarsal(node* root){
+    vector<int>res;
+    
+    if(root==NULL)
+        return res;
+        
+    if(isLeaf(root) == false)
+        res.push_back(root->data);
+        
+    addLeft(root, res);
+    
+    addLeaf(root, res);
+    
+    addRight(root, res);
+    
+    return res;
+}
+int main()
+{
+    node * root = newNode(1);
+  root -> left = newNode(2);
+  root -> left -> left = newNode(3);
+  root -> left -> left -> right = newNode(4);
+  root -> left -> left -> right -> left = newNode(5);
+  root -> left -> left -> right -> right = newNode(6);
+  root -> right = newNode(7);
+  root -> right -> right = newNode(8);
+  root -> right -> right -> left = newNode(9);
+  root -> right -> right -> left -> left = newNode(10);
+  root -> right -> right -> left -> right = newNode(11);
+    
+    vector<int>ans;
+    ans = boundaryTravarsal(root);
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+    return 0;
+}
