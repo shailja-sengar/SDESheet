@@ -1,0 +1,84 @@
+
+#include <iostream>
+#include<climits>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n^2), sc:O(n)
+/*void pathSum(node*root, int curSum, int &totalSum){
+    if(root == NULL)
+        return;
+        
+    totalSum = max(totalSum, curSum+root->data);
+    
+    pathSum(root->left, curSum+root->data, totalSum);
+    pathSum(root->right, curSum+root->data, totalSum);
+}
+void maxPathSum(node* root, int &sum){
+    if(root==NULL)
+        return ;
+        
+    int leftResult = INT_MIN;
+    int rightResult = INT_MIN;
+    
+    pathSum(root->left, 0,  leftResult);
+    pathSum(root->right, 0, rightResult);
+    
+    leftResult = max(leftResult, 0);
+    rightResult = max(rightResult, 0);
+    
+    sum = max(leftResult+rightResult+root->data, sum);
+    
+    maxPathSum(root->left, sum);
+    maxPathSum(root->right, sum);
+}*/
+
+//tc:O(n), sc:O(n)
+int helper(node* root, int &maxi){
+    if(root==NULL)
+        return 0;
+        
+    int leftMax = max(0, helper(root->left, maxi));
+    int rightMax = max(0, helper(root->right, maxi));
+    
+    int curVal = root->data;
+    
+    maxi = max(maxi, (leftMax+rightMax+curVal));
+    
+    return max(leftMax, rightMax)+curVal;
+}
+int maxPathSum(node* root){
+    int maxi = INT_MIN;
+    
+    helper(root, maxi);
+    
+    return maxi;
+}
+int main()
+{
+  node * root = newNode(-10);
+  root -> left = newNode(9);
+  root -> right = newNode(20);
+  root -> right -> left = newNode(15);
+  root -> right -> right = newNode(7);
+  
+//   int sum = 0;
+//   maxPathSum(root, sum);
+//   cout<<sum;
+
+    cout<<maxPathSum(root);
+  
+    return 0;
+}
