@@ -1,0 +1,58 @@
+
+#include <iostream>
+#include<climits>
+#include<vector>
+#include<map>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+node* makeTree(vector<int>&preorder, int preStart, int preEnd, vector<int>&inorder, int inStart, int inEnd,
+                map<int, int>&mp){
+                    
+    if(preStart > preEnd || inStart > inEnd)
+        return NULL;
+        
+    node* root = newNode(preorder[preStart]);
+    int ele = mp[root->data];
+    int nEle = ele - inStart;
+    
+    root->left = makeTree(preorder, preStart+1, preStart+nEle,inorder, inStart, ele-1, mp);
+    root->right = makeTree(preorder, preStart+nEle+1, preEnd, inorder, ele+1, inEnd, mp);
+                    
+                    
+    return root;                
+}
+                
+        
+node* constructTree(vector<int>&inorder, vector<int>&preorder){
+    map<int, int>mp;
+    int preStart = 0, preEnd = preorder.size()-1;
+    int inStart = 0, inEnd = inorder.size()-1;
+    
+    for(int i=inStart; i<=inEnd; i++){
+        mp[inorder[i]] = i;
+    }
+    node* root = makeTree(preorder, preStart, preEnd, inorder, inStart, inEnd, mp);
+    return root;
+}
+int main()
+{
+  vector<int>inorder = {10,20,40,50,30,60};
+  vector<int>preorder = {40,20,50,10,60,30};
+  
+  node* root = constructTree(inorder, preorder);
+  
+    return 0;
+}
