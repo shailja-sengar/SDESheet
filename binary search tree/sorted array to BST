@@ -1,0 +1,50 @@
+
+#include <iostream>
+#include<queue>
+#include<vector>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left; 
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+node* helper(vector<int>&nums, int start, int end){
+    if(start > end)
+        return NULL;
+        
+    int mid = (start + end)/2;
+    node* root = newNode(nums[mid]);
+    
+    root->left = helper(nums, start, mid-1);
+    root->right= helper(nums, mid+1, end);
+    
+    return root;
+}
+node* sortedArrayToBST(vector<int>&nums, int size){
+    if(size == 0)
+        return NULL;
+        
+    if(size == 1)
+        return newNode(nums[0]);
+        
+    return helper(nums, 0, size-1);
+}
+
+int main()
+{
+   vector<int>nums = {-10,-3,0,5,9};
+   int size = nums.size();
+   
+   node* root = sortedArrayToBST(nums, size);
+   
+    return 0;
+}
