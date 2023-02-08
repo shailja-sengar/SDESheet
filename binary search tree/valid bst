@@ -1,0 +1,49 @@
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<climits>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n), sc:O(N)
+bool validity(node* root, int mini, int maxi){
+    if(root == NULL)
+        return true;
+        
+    if(root->data <= mini || root->data >= maxi)
+        return false;
+        
+    return validity(root->left, mini, root->data) && validity(root->right, root->data, maxi);
+}
+bool isValidBST(node* root){
+    int mini = INT_MIN;
+    int maxi = INT_MAX;
+    
+    return validity(root, mini, maxi);
+}
+int main()
+{
+    node* root = newNode(5);
+    root->left = newNode(1);
+    root->right = newNode(4);
+    root->right->left = newNode(3);
+    root->right->right = newNode(6);
+    
+    cout<<isValidBST(root);
+
+    return 0;
+}
