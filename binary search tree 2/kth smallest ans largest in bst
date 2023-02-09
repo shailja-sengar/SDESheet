@@ -1,0 +1,66 @@
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//brute force: do any travarsal ans sotre nodes value in a vector and sort that return first kth element tc:O(n + nlogn), sc:O(n)
+
+//efficient: tc:O(n), sc:O(n) / O(1)
+// void kthSmallest(node* root, int & k, int & ans){
+//     if(root == NULL)
+//         return;
+        
+//     kthSmallest(root->left, k, ans);
+//     k--;
+//     if(k==0){
+//         ans = root->data;
+//         return;
+//     }
+//     kthSmallest(root->right, k, ans);
+// }
+
+void kthLargest(node* root, int &k, int &ans){
+    if(root == NULL)
+        return;
+        
+    kthLargest(root->right, k, ans);
+    k--;
+    if(k==0){
+        ans = root->data;
+        return;
+    }
+    kthLargest(root->left, k, ans);
+}
+int main()
+{
+    node* root = newNode(6);
+    root->left = newNode(2);
+    root->left->left = newNode(0);
+    root->left->right = newNode(4);
+    root->left->right->left = newNode(3);
+    root->left->right->right = newNode(5);
+    root->right = newNode(8);
+    root->right->left = newNode(7);
+    root->right->right = newNode(9);
+    
+    int key = 4;
+    int ans;
+    kthLargest(root, key, ans);
+    
+    cout<<ans;
+
+    return 0;
+}
