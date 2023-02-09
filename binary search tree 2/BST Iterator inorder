@@ -1,0 +1,52 @@
+
+#include <iostream>
+#include<stack>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right= NULL;
+    return temp;
+}
+
+class BSTIterator{
+private:
+    stack<node*>st;
+    
+public:
+    BSTIterator(node* root){
+        pushAll(root);
+    }    
+    
+    bool hasNext(){
+        return !st.empty();
+    }
+    
+    int next(){
+        node* temp = st.top();
+        st.pop();
+        pushAll(temp->right);
+        return temp->data;
+    }
+    
+private:
+    void pushAll(node* root){
+        while(root != NULL){
+            st.push(root);
+            root = root->left;
+        }
+    }
+};
+int main()
+{
+    cout<<"Hello World";
+
+    return 0;
+}
