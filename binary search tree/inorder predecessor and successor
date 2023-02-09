@@ -1,0 +1,112 @@
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//brute force: tc;(n + nlog n), sc:O(n)
+
+// void inOrderTravarsal(node* root, vector<int>&inorder){
+//     if(root == NULL)
+//         return;
+        
+//     inOrderTravarsal(root->left, inorder);
+//     inorder.push_back(root->data);
+//     inOrderTravarsal(root->right, inorder);
+// }
+
+// void inOrderPreSuc(node* root, int & pre, int & suc, int key){
+//     vector<int>inorder;
+    
+//     inOrderTravarsal(root, inorder);
+    
+//     //search key in inorder array
+//     int start=0, end = inorder.size()-1;
+    
+//     while(start <= end){
+//         int mid = (start + end )/2;
+//         if(inorder[mid] == key){
+//             pre = inorder[mid-1];
+//             suc = inorder[mid+1];
+//             break;
+//         }
+//         else if(inorder[mid] < key)
+//             start = mid+1;
+//         else
+//             end = mid - 1;
+//     }
+    
+// }
+
+//tc:O(n), sc:O(n) or O(1)
+void findPreSuc(node* root, node*& pre, node*& suc, int key)
+{
+    if(root == NULL)
+        return ;
+    
+    if(root->data < key){
+        pre = root;
+        findPreSuc(root->right, pre, suc, key);
+        
+    }
+    
+    else if(root->data > key){
+        suc = root;
+        findPreSuc(root->left, pre, suc, key);
+        
+    }
+    
+    else{
+        findPreSuc(root->left, pre, suc, key);
+        findPreSuc(root->right, pre, suc, key);
+    }
+
+}
+
+
+int main()
+{
+    node* root = newNode(6);
+    root->left = newNode(2);
+    root->left->left = newNode(0);
+    root->left->right = newNode(4);
+    root->left->right->left = newNode(3);
+    root->left->right->right = newNode(5);
+    root->right = newNode(8);
+    root->right->left = newNode(7);
+    root->right->right = newNode(9);
+    
+    node* pre = NULL;
+    node* suc = NULL;
+    int key = 8;
+    
+    findPreSuc(root, pre, suc, key);
+    
+    if(pre == NULL || suc == NULL)
+        cout<<-1;
+    
+    else{
+        cout<<pre->data<<" ";
+        cout<<suc->data;
+    }
+    
+    //for brute force
+    // int pre =-1, suc = -1;
+    // int key = 8;
+    // inOrderPreSuc(root, pre, suc, key);
+    // cout<<pre<<" "<<suc;
+
+    return 0;
+}
