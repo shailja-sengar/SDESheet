@@ -1,0 +1,72 @@
+
+#include <iostream>
+#include<climits>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+//tc:O(n), sc:O(1)
+class nodeInfo{
+public:
+    int maxSize, minNode, maxNode;
+    
+    nodeInfo(int minNode, int maxNode, int maxSize){
+        this->minNode = minNode;
+        this->maxNode = maxNode;
+        this->maxSize = maxSize;
+    }
+};
+
+
+nodeInfo largestBSTHelper(node* root){
+    //base case when node is null, no of nodes -> 0, mini = maximum value, maxi = minimum value
+    if(root == NULL)
+        return nodeInfo(INT_MAX, INT_MIN, 0);
+        
+    //do the post order, go to left then right subtree
+    auto left = largestBSTHelper(root->left);
+    auto right = largestBSTHelper(root->right);
+    
+    //check for the current root, root should be greater than maximum value of it's left subtree and smaller than the minimum value 
+    //of it's right subtree, then it would be BST
+    if(left.maxNode < root->data && root->data < right.minNode){
+        // if for the current root is bst then find the minimum and maximum value of the whole subtree
+        return nodeInfo(min(left.minNode, root->data), max(right.maxNode, root->data), (left.maxSize + right.maxSize + 1));
+    }
+    
+    //if current root is not bst pass the minimum value as INT_MIN, maximum as INT_MAX, size as greater of both left and right subtree
+    return nodeInfo(INT_MIN, INT_MAX, max(left.maxSize, right.maxSize));
+}
+int largestSizeBST(node* root){
+    return largestBSTHelper(root).maxSize;
+}
+int main()
+{
+    node* root = newNode(20);
+    root->left = newNode(15);
+    root->left->left = newNode(14);
+    root->left->left->right = newNode(17);
+    root->left->right = newNode(18);
+    root->left->right->left = newNode(16);
+    root->left->right->right = newNode(19);
+    
+    root->right = newNode(40);
+    root->right->left = newNode(30);
+    root->right->right = newNode(60);
+    root->right->right->left = newNode(50);
+    
+    cout<<largestSizeBST(root);
+
+    return 0;
+}
