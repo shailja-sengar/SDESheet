@@ -1,0 +1,104 @@
+
+#include <iostream>
+#include<climits>
+#include<stack>
+using namespace std;
+
+struct node{
+    int data;
+    node* right, *left;
+};
+
+node* newNode(int data){
+    node* temp = new node;
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+class BSTIterator{
+ private:
+    stack<node*>st;
+    bool reverse = true;
+    
+public:
+    
+    BSTIterator(node* root, bool isReverse){
+        reverse = isReverse;
+        pushAll(root);
+    }
+    
+    bool hasNext(){
+        return !st.empty();
+    }
+    
+    int next(){
+        node* temp = st.top();
+        st.pop();
+        if(!reverse)
+            pushAll(temp->right);
+        else
+            pushAll(temp->left);
+        return temp->data;
+    }
+    
+private:
+    
+    void pushAll(node* root){
+        while(root != NULL){
+            st.push(root);
+            if(reverse == true)
+                root = root->right;
+            else
+                root = root->left;
+        }
+    }
+};
+
+//brute force: applt inorder store all nodes value in vector and apply two sum on vector and check with target
+            //tc:O(n), sc:O(n)
+            
+
+//using class iterator : tc:O(n), sc:O(1)
+bool twoSum(node* root, int k){
+    if(root == NULL)
+        return false;
+        
+    BSTIterator l(root, false);
+    BSTIterator r(root, true);
+    
+    int i = l.next();
+    int j = r.next();
+    
+    while(i < j){
+        if(i+j == k)
+            return true;
+            
+        else if(i+j < k)
+            i = l.next();
+            
+        else    
+            j = r.next();
+    }
+    return false;
+}
+int main()
+{
+    node* root = newNode(20);
+    root->left = newNode(15);
+    root->left->left = newNode(14);
+    root->left->left->right = newNode(17);
+    root->left->right = newNode(18);
+    root->left->right->left = newNode(16);
+    root->left->right->right = newNode(19);
+    
+    root->right = newNode(40);
+    root->right->left = newNode(30);
+    root->right->right = newNode(60);
+    root->right->right->left = newNode(50);
+    
+    cout<<twoSum(root, 110);
+
+    return 0;
+}
