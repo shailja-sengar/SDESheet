@@ -1,0 +1,71 @@
+class MedianFinder {
+public:
+priority_queue<int>maxh;
+priority_queue<int, vector<int>, greater<int>>minh;
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        //case1 : if both heaps are emoty push into the max heap
+        if(maxh.empty() && minh.empty())
+            maxh.push(num);
+        
+        //case2: when they are in different size
+        else{
+            //case2.1 : push in min heap when num is greater then maxheap top
+            if(num > maxh.top())
+                minh.push(num);
+            else
+                maxh.push(num);
+        }
+
+        //find the size of both heaps
+        int n = maxh.size();
+        int m = minh.size();
+
+        //if they are not balanced
+        if((n-m == 2) || (n-m == -2)){
+            //if maxheap has more elements pop the top of maxheap and push into the minheap
+            if(n > m){
+                int ele = maxh.top();
+                maxh.pop();
+                minh.push(ele);
+            }
+            //if min heap has more elements pop the top of minheap and push into the maxheap
+            else{
+                int ele = minh.top();
+                minh.pop();
+                maxh.push(ele);
+            }
+        }
+    }
+    
+    double findMedian() {
+        
+       int n = maxh.size();
+        int m = minh.size();
+        //once we have balanced heaps then cheac they are even length or odd, 
+        //case1: if even length then median will be top of both elments and take average
+        if((n+m)%2 == 0){
+            return ((double)minh.top() + (double)maxh.top())/2.0;
+        }
+
+        //if case2: if odd length
+        else{
+            //which ever has more elements return top of that heap
+            if(n > m)
+                return maxh.top();
+            else{
+                return minh.top();
+            }
+        }
+    }
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
