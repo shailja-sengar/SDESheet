@@ -1,0 +1,122 @@
+
+#include <iostream>
+#include<vector>
+#include<unordered_map>
+#include<map>
+#include<queue>
+using namespace std;
+
+struct GraphNode{
+    int data;
+    vector<GraphNode*>neighbours;
+};
+
+GraphNode* dfs(GraphNode* node, unordered_map<GraphNode*, GraphNode*>&mp){
+    //make adjacancy list for each node 
+    vector<GraphNode*>neighbour;
+
+    //make a clone of current node
+    GraphNode* clone = new GraphNode();
+    clone->data = node->data;
+
+    //store in the map original node as key and clone node as value
+    mp[node] = clone;
+
+    for(auto it : node->neighbours){
+        //check if the current node is already present in map it means it is already created push it clone's
+        //neighbour list
+        if(mp.find(it) != mp.end()){
+            neighbour.push_back(mp[it]);
+        }
+        else{
+            neighbour.push_back(dfs(it, mp));
+        }
+    }
+    clone->neighbours = neighbour;
+    return clone;
+}
+
+GraphNode* cloneGraph(GraphNode* node) {
+        unordered_map<GraphNode*, GraphNode*>mp;
+
+        if(node == NULL)
+            return NULL;
+
+        //if there is only one node no one it's neighbours then clone that single node
+        if(node->neighbours.size() == 0){
+            GraphNode* clone = new GraphNode();
+            clone->data = node->data;
+            return clone;
+        }
+
+        return dfs(node, mp);
+}
+
+GraphNode* buildGraph(){
+    GraphNode* node1 = new GraphNode();
+    node1->data = 1;
+    GraphNode* node2 = new GraphNode();
+    node2->data = 2;
+    GraphNode* node3 = new GraphNode();
+    node3->data = 3;
+    GraphNode* node4 = new GraphNode();
+    node4->data = 4;
+    
+    vector<GraphNode*>v;
+    v.push_back(node4);
+    v.push_back(node2);
+    node1->neighbours = v;
+    v.clear();
+    
+    v.push_back(node1);
+    v.push_back(node3);
+    node2->neighbours = v;
+    v.clear();
+    
+    v.push_back(node2);
+    v.push_back(node4);
+    node3->neighbours = v;
+    v.clear();
+    
+    v.push_back(node3);
+    v.push_back(node1);
+    node4->neighbours = v;
+    v.clear();
+    
+    return node1;
+}
+
+void bfs(GraphNode *src)
+{
+    map<GraphNode*, bool> visit;
+    queue<GraphNode*> q;
+    q.push(src);
+    visit[src] = true;
+    while (!q.empty())
+    {
+        GraphNode *u = q.front();
+        cout << "Value of Node " << u->data << "\n";
+        cout << "Address of Node " <<u << "\n";
+        q.pop();
+        vector<GraphNode *> v = u->neighbours;
+        int n = v.size();
+        for (int i = 0; i < n; i++)
+        {
+            if (!visit[v[i]])
+            {
+                visit[v[i]] = true;
+                q.push(v[i]);
+            }
+        }
+    }
+    cout << endl;
+}
+
+int main(){
+    GraphNode* src = buildGraph();
+    cout<<"before"<<endl;
+    bfs(src);
+    GraphNode* ans = cloneGraph(src);
+    cout<<"after"<<endl;
+    bfs(ans);
+}
