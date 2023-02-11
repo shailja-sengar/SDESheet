@@ -1,0 +1,24 @@
+vector<int>bfs(int V, vector<int>adj[]){
+    int vis[v] = {0};
+    vis[0] = 1;
+    
+    queue<int>q;
+    q.push(0);
+    
+    vector<int>ans;
+    while(!q.rmpty()){
+        int curNode = q.front();
+        q.pop();
+        
+        ans.push(curNode);
+        
+        for(auto it : adj[curNode]){
+            if(!vis[it]){
+                vis[it] = 1;
+                q.push(it);
+            }
+        }
+    }
+    
+    return ans;
+}
