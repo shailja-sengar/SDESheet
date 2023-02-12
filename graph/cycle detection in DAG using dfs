@@ -1,0 +1,48 @@
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+bool detectCycleDFS(int src, int vis[], int pathVis[], vector<int>adj[]){
+    //Step1: mark current node visited in both the arrays
+    vis[src] = 1;
+    pathVis[src] = 1;
+    
+    //Step2: go to all adjacent nodes
+    for(auto adjacentNode : adj[src]){
+        //Step2.1: if current adjacent node is not visited call recursive call for it 
+        if(!vis[adjacentNode]){
+            if(detectCycleDFS(adjacentNode, vis, pathVis, adj)==true)
+                return true;
+        }
+        //Step2.2: if current node is marked in visited array as well as in pathvisited it means it has cycle so return true;
+        else if(pathVis[adjacentNode])
+            return true;
+    }
+    
+    //ste3: while returning from the current node unmark it from pathVis array
+    pathVis[src] = 0;
+    return false;
+}
+bool isCycle(int V, vector<int>adj[]){
+    int vis[V] = {0};
+    int pathVis[V] = {0};
+    
+    //for multiple component
+    for(int i=0; i<V; i++){
+        if(!vis[i]){
+            if(detectCycleDFS(i, vis, pathVis, adj))
+                return true;
+        }
+    }
+    
+    return false;
+}
+int main()
+{
+    vector<int>adj[11] = {{}, {2}, {3}, {4, 7}, {5}, {6}, {}, {5}, {9}, {10}, {}};
+    
+    cout<<isCycle(11, adj);
+
+    return 0;
+}
