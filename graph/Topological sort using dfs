@@ -1,0 +1,46 @@
+
+#include <iostream>
+#include<vector>
+#include<queue>
+#include<stack>
+using namespace std;
+
+void findTopo(int node, stack<int>&st, int vis[], vector<int>adj[]){
+    vis[node] = 1;
+    
+    for(auto adjacentNode : adj[node]){
+        if(!vis[adjacentNode]){
+            findTopo(adjacentNode, st, vis, adj);
+        }
+    }
+    st.push(node);
+}
+vector<int> topoSortDFS(int V, vector<int>adj[]){
+    vector<int>topo;
+    stack<int>st;
+    int vis[V] = {0};
+    
+    for(int i=0; i<V; i++){
+        if(!vis[i]){
+            findTopo(i, st, vis, adj);
+        }
+    }
+    
+    while(!st.empty()){
+        topo.push_back(st.top());
+        st.pop();
+    }
+    return topo;
+}
+int main()
+{
+    vector<int>adj[6] = {{}, {}, {3}, {1}, {1, 0}, {0, 2}};
+    
+    vector<int>topo = topoSortDFS(6, adj);
+    
+    for(int i=0; i<topo.size(); i++){
+        cout<<topo[i]<<" ";
+    }
+
+    return 0;
+}
