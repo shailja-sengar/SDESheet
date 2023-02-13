@@ -1,0 +1,60 @@
+
+#include <iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+vector<int>shortestPathBellmanFord(int n, vector<vector<int>>&edges, int src){
+    vector<int>dist(n, 1e9);
+    dist[src] = 0;
+    
+    //do the iteration for the n-1 times, as 0 based indexing so go till the n-2 index
+    for(int i=0; i<n-1; i++){
+        //update the each edge weight in current iteration
+        for(auto it : edges){
+            int u = it[0];
+            int v = it[1];
+            int wt = it[2];
+            
+            if(dist[u] != 1e9 && dist[u]+wt < dist[v]){
+                dist[v] = dist[u] + wt;
+            }
+        }
+    }
+    
+    //nth relaxation to check negative cycle
+    for(auto it : edges){
+        int u = it[0];
+        int v = it[1];
+        int wt = it[2];
+        
+        //if at nth relaxation also edge weight is getting updated it means graph has negative cycle and we can't find 
+        //shortest path
+        if(dist[u] != 1e9 && dist[u]+wt < dist[v]){
+            return {-1};
+        }
+    }
+    
+    return dist;
+}
+int main()
+{
+   int V = 6;
+	vector<vector<int>> edges(7, vector<int>(3));
+	edges[0] = {3, 2, 6};
+	edges[1] = {5, 3, 1};
+	edges[2] = {0, 1, 5};
+	edges[3] = {1, 5, -3};
+	edges[4] = {1, 2, -2};
+	edges[5] = {3, 4, -2};
+	edges[6] = {2, 4, 3};
+    
+    vector<int>ans = shortestPathBellmanFord(V, edges, 0);
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+    
+    return 0;
+}
