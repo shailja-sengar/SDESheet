@@ -1,0 +1,92 @@
+
+#include <iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+
+void dfs(int node, vector<int>&vis, vector<int>adj[], stack<int>&st){
+    vis[node] = 1;
+    
+    for(auto it : adj[node]){
+        if(!vis[it]){
+            dfs(it, vis, adj, st);
+        }
+    }
+    st.push(node);
+}
+
+
+void dfs3(int node, vector<int>&vis, vector<int>&vec, vector<int>adjT[]){
+    vis[node] = 1;
+    vec.push_back(node);
+    for(auto it : adjT[node]){
+        if(!vis[it]){
+            dfs3(it, vis, vec, adjT);
+        }
+    }
+}
+
+vector<vector<int>>SCC(int V, vector<int>adj[]){
+    //Step1: perform dfs and store all the nodes according to their finishing time
+    vector<int>vis(V, 0);
+    stack<int>st;
+    
+    for(int i=0; i<V; i++){
+        if(!vis[i]){
+            dfs(i, vis, adj, st);
+        }
+    }
+    
+    //step2 : reverse all the edges and store another adjacancy list
+    vector<int>adjT[V];
+    for(int i=0; i<V; i++){
+        vis[i] = 0;         //we can use same vis list for the new adjacancy list for doing dfs
+        for(auto it : adj[i]){
+            //now the edges is i -> it , but it should be it -> i
+            adjT[it].push_back(i);
+        }
+    }
+    
+    //step3: now perform the dfs individual scc by applying on the new transpose adjacancy list
+    //int scc = 0;
+    vector<vector<int>>ans;
+    while(!st.empty()){
+        int node = st.top();
+        st.pop();
+        
+        if(!vis[node]){
+            vector<int>vec;
+            dfs3(node, vis, vec, adjT);
+            ans.push_back(vec);
+            
+        }
+    }
+    
+    return ans;
+}
+int main()
+{
+    int V = 5;
+    vector<vector<int>>graph = {
+      {1, 0}, {0, 2},
+        {2, 1}, {0, 3},
+        {3, 4}  
+    };
+
+    vector<int>adj[V];
+    
+    for(auto it : graph){
+        adj[it[0]].push_back(it[1]);
+    }
+    
+    vector<vector<int>>ans;
+    ans = SCC(V, adj);
+    
+    for(int i=0; i<ans.size(); i++){
+        for(int j=0; j<ans[i].size(); j++){
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    return 0;
+}
