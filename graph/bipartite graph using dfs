@@ -1,0 +1,42 @@
+
+#include <iostream>
+#include<vector>
+#include<set>
+using namespace std;
+
+
+//tc:O(V + 2E), sc:O(3V) ~ O(V)
+bool dfs(int node, int color, int colored[], vector<int>adj[]){
+    colored[node] = color;
+    
+    for(auto it : adj[node]){
+        if(colored[it] == -1){
+            if(dfs(it, !color, colored, adj) == false)
+                return false;
+        }
+        else if(colored[it] == color)
+            return false;
+    }
+    
+    return true;
+}
+bool isBipartite(int V, vector<int>adj[]){
+    int colored[V] = {-1};
+    
+    for(int i=0; i<V; i++){
+        if(colored[i] == -1){
+            if(dfs(i, 0, colored, adj) == false)
+                return false;
+        }
+    }
+    
+    return true;
+}
+
+int main()
+{
+    vector<int>adj[8] = {{2}, {1,3,6}, {2,4}, {3,7,5}, {4,6}, {2,5}, {4,8}, {7}};
+
+    cout<<isBipartite(8, adj);
+    return 0;
+}
