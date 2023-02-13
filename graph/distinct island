@@ -1,0 +1,82 @@
+
+#include <iostream>
+#include<vector>
+#include<set>
+using namespace std;
+
+void findIsland(int curRow, int curCol, vector<pair<int,int>>&v, vector<vector<int>>&vis, vector<vector<int>>&grid,
+                int baseRow, int baseCol)
+{
+                    
+            vis[curRow][curCol] = 1;
+            
+            v.push_back({
+                curRow - baseRow, 
+                curCol - baseCol
+                
+            });
+            
+            int n = grid.size();
+            int m = grid[0].size();
+            
+            int delRow[] = {-1, 0, +1, 0};
+            int delCol[] = {0, -1, 0, +1};
+            
+            
+            
+            //go to all 4 directions in grid
+            for(int i=0; i<4; i++){
+                int nRow = curRow + delRow[i];
+                int nCol = curCol + delCol[i];
+                
+                //check all the boundary conditition for the new row and new column
+                if(nRow>=0 && nRow<n && nCol>=0 && nCol<m && !vis[nRow][nCol] && grid[nRow][nCol]==1){
+                    findIsland(nRow, nCol, v, vis, grid, baseRow, baseCol);
+                }
+            }
+}
+
+int noOfDistinctIsland(vector<vector<int>>&grid){
+    int n = grid.size();
+    int m = grid[0].size();
+    
+    //make a visited grid
+    vector<vector<int>>vis(n, vector<int>(m, 0));
+    
+    //make a set which stores all the distinct islands coordinates
+    set<vector<pair<int, int>>>s;
+    
+    //for loop for each cell of matrix
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            
+            //check all the conditition for current cell of grid
+            if(!vis[i][j] && grid[i][j]==1){
+            
+            //make a vector which stores all the island coordinates for the current cell of matrix
+            vector<pair<int, int>>v;
+            
+            //call recursive function for finding all the island of each current cell
+                findIsland(i, j, v, vis, grid, i, j);
+            
+                s.insert(v);
+            }
+            
+        }
+    }
+    
+    return s.size();
+}
+
+int main()
+{
+    vector<vector<int>>grid = {
+      {1, 1, 0, 1, 1},
+        {1, 0, 0, 0, 0},
+        {0, 0, 0, 0, 1},
+        {1, 1, 0, 1, 1}
+    };
+
+    cout<<noOfDistinctIsland(grid);
+    return 0;
+}
