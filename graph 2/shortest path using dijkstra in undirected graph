@@ -1,0 +1,84 @@
+
+#include <iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+vector<int>shortestPathDijkstra(int V, vector<vector<int>>&graph){
+    //make adjacancy list of given graph list of pair<node, it's edge weight>
+    vector<pair<int, int>>adj[V+1];
+    for(auto it : graph){
+        adj[it[0]].push_back({it[1], it[2]});
+        adj[it[1]].push_back({it[0], it[2]});
+    }
+    
+    //for dijkstra initalize min heap of pair<distance, node> , distance array, parent array to store the each nodes parent
+    priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int, int>>>pq;
+    
+    vector<int>dist(V+1, 1e9);
+    vector<int>parent(V+1);
+    //assign parent value as node it self
+    for(int i=1; i<=V; i++){
+        parent[i] = i;
+    }
+    
+    pq.push({0, 1});
+    dist[1] = 0;
+    
+    //bfs
+    while(!pq.empty()){
+        auto it = pq.top();
+        pq.pop();
+        
+        int node = it.second;
+        int dis = it.first;
+        
+        for(auto it : adj[node]){
+            int edgeN = it.first;
+            int edgeW = it.second;
+            
+            if(dis + edgeW < dist[edgeN]){
+                dist[edgeN] = dis+edgeW;
+                pq.push({dis + edgeW, edgeN});
+                parent[edgeN] = node;
+            }
+        }
+    }
+    
+    //if distance is not changed means we could not find path 
+    if(dist[V] == 1e9)
+        return {-1};
+    
+    //once queue became empty, find the path
+    vector<int>path;
+    int node = V;
+    
+    while(parent[node] != node){
+        path.push_back(node);
+        node = parent[node];
+    }
+    
+    //store the source node in the end
+    path.push_back(node);
+    
+    reverse(path.begin(), path.end());
+    return path;
+    
+}
+int main()
+{
+    vector<vector<int>>graph = {
+      {1, 2, 2}, {2, 5, 5}, {2, 3, 4}, {1, 4, 1}, {4, 3, 3}, {3, 5, 1}  
+    };
+    
+    int V = 5;
+    
+    vector<int>ans = shortestPathDijkstra(V, graph);
+    
+    for(int i=0; i<ans.size(); i++){
+        cout<<ans[i]<<" ";
+    }
+    
+    return 0;
+}
