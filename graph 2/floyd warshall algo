@@ -1,0 +1,64 @@
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+//tc:O(v^3) sc:O(v^2)
+vector<vector<int>>floydWarshall(int V, vector<vector<int>>&graph){
+    vector<vector<int>>ans = graph;
+    
+    //Step1 : first fill all the -1 with infinite value as it shows current cell is not reacheble from source
+    for(int src=0; src<V; src++){
+        for(int dest=0; dest<V; dest++){
+            if(ans[src][dest] == -1)
+                ans[src][dest] = 1e9;
+                
+            //fill the node value 0 for the same source and destination node
+            if(src == dest)
+                ans[src][dest] = 0;
+        }
+        
+    }
+    
+    //Step2 :
+    //take each path one by one, to go to from each node to each and every other node
+    for(int path = 0; path<V; path++){
+        for(int src=0; src<V; src++){
+            for(int dest=0; dest<V; dest++){
+                ans[src][dest] = min(ans[src][dest], (ans[src][path] + ans[path][dest]));
+            }
+        }
+    }
+    
+    //Step3 : in the last check if any cell has infinite value it means we can't go to that node by taking shorted path
+    for(int src=0; src<V; src++){
+        for(int dest=0; dest<V; dest++){
+            if(ans[src][dest] == 1e9)
+                ans[src][dest] = -1;
+        }
+    }
+    
+    return ans;
+}
+int main()
+{
+    int V = 4;
+    vector<vector<int>>graph(V, vector<int>(V, -1));
+    graph[0][1] = 2;
+    graph[1][0] = 1;
+    graph[1][2] = 3;
+	graph[3][0] = 3;
+	graph[3][1] = 5;
+	graph[3][2] = 4;
+	
+	vector<vector<int>>ans = floydWarshall(V, graph);
+	
+	for(int i=0; i<ans.size(); i++){
+	    for(int j=0; j<ans[i].size(); j++){
+	        cout<<ans[i][j]<<" ";
+	    }
+	    cout<<endl;
+	}
+
+    return 0;
+}
