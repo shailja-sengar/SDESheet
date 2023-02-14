@@ -1,0 +1,128 @@
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+class DisjointSet{
+  //Step1 : initial configueation
+  vector<int>rank, parent, size;
+  
+ public: 
+    
+    //Step2: make rank as n+1 size for 1 based indexing and fill with 0 and parent value will be nodes value itself
+    DisjointSet(int n){
+        rank.resize(n+1, 0);
+        size.resize(n+1, 1);
+        parent.resize(n+1);
+        for(int i=1; i<=n; i++)
+            parent[i] = i;
+    }
+    
+    //Step3: define function to find top parent of a node using path comparsion technique
+    int findUParent(int u){
+        //base case when node value and it's parent value is same it means node is the top most parent
+        if(u == parent[u])
+            return u;
+            
+        //without path comparsion, it takes lograthmic time
+        //return findUParent(parent[u]);
+        
+        //with path comparsion, it takes constant time
+        return parent[u] = findUParent(parent[u]);
+    }
+    
+    //Step4: define funtion to connect two nodes
+    void unionRank(int u, int v){
+        //Step4.1 : first find the ultimate parent of both the nodes
+        int ulp_u = findUParent(u);
+        int ulp_v = findUParent(v);
+        
+        //if both parents are same it means both nodes already belonging to same componenet of a graph no need to anything
+        if(ulp_u == ulp_v)
+            return;
+            
+        //if parents are different , then check by their Rank
+        //case 1 : if u's parent's rank is samller than v's parents's, then attach u to v
+        if(rank[ulp_u] < rank[ulp_v])
+            parent[ulp_u] = ulp_v;
+            
+        //case 2 : if v's parent's rank is samller than u's parent's, then attack v to u
+        else if(rank[ulp_v] < rank[ulp_u])
+            parent[ulp_v] = ulp_u;
+            
+        //case 3 : if ranks are same, we can attach any one with any one but this time ranke will increase
+        else{
+            parent[ulp_u] = ulp_v;
+            rank[ulp_v]++;
+        }
+    }
+    
+    //alternate way of connecting nodes using size of component
+    void unionSize(int u, int v){
+        int ulp_u = findUParent(u);
+        int ulp_v = findUParent(v);
+        
+        if(ulp_u == ulp_v)
+            return;
+           
+        //which has smaller size attach that to bigger size and increase the size of bigger one's  by the size of smaller ones's  
+        if(size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        
+        else{
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+int MSTKruskalAlgo(int V, vector<vector<int>>adj[]){
+    //make the vector to store pair<wt, pair<u, v>>
+    vector<pair<int, pair<int, int>>>edges;
+    for(int i=0; i<V; i++){
+        for(auto it : adj[i]){
+            int adjNode = it[0];
+            int wt = it[1];
+            int node = i;
+            
+            edges.push_back({wt, {node, adjNode}});
+        }
+    }
+    
+    DisjointSet ds(V);
+    
+    sort(edges.begin(), edges.end());
+    
+    int mstSum = 0;
+    
+    for(auto it : edges){
+        int wt = it.first;
+        int u = it.second.first;
+        int v = it.second.second;
+        
+        if(ds.findUParent(u) != ds.findUParent(v)){
+            mstSum += wt;
+            ds.unionSize(u, v);
+        }
+    }
+    
+    return mstSum;
+}
+int main()
+{
+    int V = 5;
+    vector<vector<int>>graph = {{0, 1, 2}, {0, 2, 1}, {1, 2, 1}, {2, 3, 2}, {3, 4, 1}, {4, 2, 2}};
+    
+    //make adjacancy list
+    vector<vector<int>>adj[V];
+    for(auto it : graph){
+        adj[it[0]].push_back({it[1], it[2]});
+        adj[it[1]].push_back({it[0], it[2]});
+    }
+
+    cout<<MSTKruskalAlgo(V, adj);
+    return 0;
+}
