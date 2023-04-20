@@ -30,7 +30,7 @@ using namespace std;
 //efficint: using stack, tc:O(n), sc:O(3n)
 /*int largestRectangularArea(vector<int>&arr, int n){
     vector<int>leftSmaller(n, 0);
-    vector<int>rightSmaller(n, 0);
+    vector<int>rightSmaller(n, n-1);
     stack<int>st;
     
     //to find left smaller(previous smaleer)
