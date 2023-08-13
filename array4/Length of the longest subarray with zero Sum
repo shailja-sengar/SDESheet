@@ -33,7 +33,7 @@ int longestSubarray(vector<int>&nums){
         }
         else{
             //if we find current sum in map
-            if(ump.find(nums[i]) != ump.end()){
+            if(ump.find(currSum) != ump.end()){
                 len = max(len, i - ump[currSum]);
             }
             else
