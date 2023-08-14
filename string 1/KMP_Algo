@@ -1,0 +1,72 @@
+28. Find the Index of the First Occurrence in a String
+
+class Solution {
+public:
+
+    vector<int>kmpLPS(string &pt){
+        int n = pt.size();
+        int i=0, j=1;
+        vector<int>lps(n);
+        lps[0] = 0;
+        while(j < n){
+            if(pt[i] != pt[j]){
+                if(i > 0)
+                    i = lps[i-1];
+                else
+                    lps[j++] = 0;
+            }
+            else{
+                lps[j] = i+1;
+                i++;
+                j++;
+            }  
+        }
+        return lps;
+    }
+    int strStr(string txt, string pt) {
+        // int m = haystack.size();
+        // int n = needle.size();
+
+        // for(int i=0; i<=(m-n); i++){
+        //     bool isBool = true;
+        //     for(int j=0; j<n; j++){
+        //         if(needle[j] != haystack[j+i]){
+        //             isBool = false;
+        //             break;
+        //         }
+        //     }
+        //     if(isBool == true)
+        //         return i;
+        // }
+        // return -1;
+
+        int n = txt.size();
+        int m = pt.size();
+        if(m == 0)
+            return 0;
+        vector<int>lps = kmpLPS(pt);
+
+        int i = 0;
+        int j = 0;
+
+        while(i < n){
+            //when both chars are matching
+            if(txt[i] == pt[j])
+            {
+                i++;
+                j++;
+            }
+            if(j == m)
+                return i - j;
+            
+            else if(i < n && pt[j] != txt[i]){
+                if(j > 0){
+                    j = lps[j-1];
+                }
+                else
+                    i++;
+            }
+        }
+        return -1;
+    }
+};
